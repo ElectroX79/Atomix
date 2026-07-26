@@ -13,7 +13,7 @@ std::vector<uint8_t> to_bytes(T value) {
     return bytes;
 }
 
-TabularData create_test_instance() {
+DataTable create_test_instance() {
     std::vector<uint8_t> raw_data;
     
     auto int_bytes = to_bytes<int32_t>(42);
@@ -25,18 +25,18 @@ TabularData create_test_instance() {
     auto str_offset_bytes = to_bytes<uint64_t>(0);
     raw_data.insert(raw_data.end(), str_offset_bytes.begin(), str_offset_bytes.end());
 
-    std::vector<TabularData::meta_data> metadata = {
+    std::vector<DataTable::meta_data> metadata = {
         {"id", 0, 0, 1, DataType::Int32},
         {"name", 4, 8, 1, DataType::String}
     };
 
     std::vector<std::string> string_buffer = {"Hola"};
 
-    TabularData td(raw_data, metadata, string_buffer);
+    DataTable td(raw_data, metadata, string_buffer);
     return td;
 }
 
-TabularData create_test_instance2() {
+DataTable create_test_instance2() {
     std::vector<uint8_t> raw_data;
 
 
@@ -58,7 +58,7 @@ TabularData create_test_instance2() {
     raw_data.insert(raw_data.end(), str_offset_bytes2.begin(), str_offset_bytes2.end());
 
 
-    std::vector<TabularData::meta_data> metadata = {
+    std::vector<DataTable::meta_data> metadata = {
         {"id", 0, 0, 1, DataType::Int32},
         {"name", 4, 8, 1, DataType::String},
         {"id", 0, 16, 1, DataType::Int32},
@@ -67,7 +67,7 @@ TabularData create_test_instance2() {
 
     std::vector<std::string> string_buffer = {"Hola", "Hola"};
 
-    TabularData td(raw_data, metadata, string_buffer);
+    DataTable td(raw_data, metadata, string_buffer);
     return td;
 }
 
@@ -78,13 +78,13 @@ TEST_CASE("Basic memory integrity test", "[tabular_data]"){
 
 
     SECTION("START_EMPTINESS_TEST"){
-        TabularData td;
+        DataTable td;
         REQUIRE(td.empty());
     }
 
     SECTION("START_NON_EMPTY"){
 
-        TabularData td;
+        DataTable td;
         REQUIRE(td.empty());
     }
 
@@ -94,7 +94,7 @@ TEST_CASE("Basic memory integrity test", "[tabular_data]"){
 }
 
 TEST_CASE("Exception handling test", "[tabular_data]"){
-    TabularData td;
+    DataTable td;
 
 
     SECTION("OUT_BOUNDS_TEST_ERASE"){
@@ -110,8 +110,8 @@ TEST_CASE("Exception handling test", "[tabular_data]"){
 
 
 TEST_CASE("Appending and erasing", "[tabular_data]"){
-    TabularData td = create_test_instance();
-    TabularData td2 = create_test_instance2();
+    DataTable td = create_test_instance();
+    DataTable td2 = create_test_instance2();
 
     td.print();
 

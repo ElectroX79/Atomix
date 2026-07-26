@@ -2,17 +2,22 @@
 #define DATATYPE_HH
 
 #include <optional>
+#include <string>
+#include <stdexcept>
+#include <cstdint>
 
-enum class DataType : int{
-    Int32,
-    Float64,
-    String,
-    Bool,
-    Undefined
-};
+namespace Atomix {
+    enum class DataType : int{
+        Int32,
+        Float64,
+        String,
+        Bool,
+        Undefined
+    };
+}
 
 
-namespace DataTypeUtils {
+namespace Atomix::DataTypeUtils {
     inline std::string data_type_to_string(const DataType& dt) {
 
         switch (dt)
@@ -40,16 +45,16 @@ namespace DataTypeUtils {
         switch (dtype)
         {
             case DataType::Int32:
-                return 4;
+                return sizeof(int32_t);
 
             case DataType::Float64:
-                return 8;
+                return sizeof(double);
 
             case DataType::Bool:
-                return 1;
+                return sizeof(bool);
 
             case DataType::String:
-                return 4; //IMPORTANT: returns the size of the offset (uint32), not the string
+                return std::nullopt; //IMPORTANT: returns the size of the offset (uint32), not the string
 
             case DataType::Undefined:
                 return std::nullopt;
