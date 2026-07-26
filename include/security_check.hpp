@@ -3,10 +3,9 @@
 
 
 #include <stdexcept>
-#include <iostream>
 
 
-namespace bound_check{
+namespace atomix::bounds{
 
      inline void check_index_interval(const size_t begin, const size_t end, const size_t container_size) {
           //always begin >= 0, because begin is size_t
@@ -27,6 +26,7 @@ namespace bound_check{
      }
 
 };
+
  
 
 #endif

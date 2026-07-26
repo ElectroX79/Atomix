@@ -1,65 +1,70 @@
-#ifndef  BUFFER_HPP
+#ifndef BUFFER_HPP
 #define BUFFER_HPP
 
 #include <cstdint>
 #include <stdexcept>
-#include <system_allocator.hpp>
+#include <vmem.hpp>
 
-class Buffer {
+
+namespace atomix {
+    class Buffer {
 
     private:
-    uint8_t* begin_ = nullptr;
-    size_t size_ = 0;
+        uint8_t* begin_ = nullptr;
+        size_t size_ = 0;
 
 
     public:
 
-    Buffer(): begin_(nullptr), size_(0) {}
-    Buffer(const Buffer&) = delete;
-    Buffer& operator=(const Buffer&) = delete;
+        Buffer(): begin_(nullptr), size_(0) {}
+        Buffer(const Buffer&) = delete;
+        Buffer& operator=(const Buffer&) = delete;
 
-    Buffer(Buffer&& other) noexcept: begin_(other.begin_), size_(other.size_) {
-        // no need to deallocate yet (using contructor)
-        other.begin_ = nullptr;
-        other.size_ = 0;
-    }
-
-    Buffer& operator=(Buffer&& other) noexcept {
-        if (this != &other) {
-            sys_alloc::deallocate(begin_, size_);
-            begin_ = nullptr;
-            size_ = 0;
-
-            begin_ = other.begin_;
-            size_ = other.size_;
-
+        Buffer(Buffer&& other) noexcept: begin_(other.begin_), size_(other.size_) {
+            // no need to deallocate yet (using contructor)
             other.begin_ = nullptr;
             other.size_ = 0;
         }
-        return *this;
 
-    }
+        Buffer& operator=(Buffer&& other) noexcept {
+            if (this != &other) {
+                vmem::deallocate(begin_, size_);
+                begin_ = nullptr;
+                size_ = 0;
 
-    explicit Buffer(const size_t size) {
-       begin_ = sys_alloc::allocate(size);
-        size_ = size;
-    }
+                begin_ = other.begin_;
+                size_ = other.size_;
 
-    ~Buffer(){
-        sys_alloc::deallocate(begin_, size_);
-        begin_ = nullptr;
-        size_ = 0;
-    }
+                other.begin_ = nullptr;
+                other.size_ = 0;
+            }
+            return *this;
 
-    [[nodiscard]] uint8_t* get_begin() const{
-        return begin_;
-    }
+        }
 
-    [[nodiscard]] size_t size() const {
-        return size_;
-    }
+        explicit Buffer(const size_t size) {
+            begin_ = vmem::allocate(size);
+            size_ = size;
+        }
 
-};
+        ~Buffer(){
+            vmem::deallocate(begin_, size_);
+            begin_ = nullptr;
+            size_ = 0;
+        }
+
+        [[nodiscard]] uint8_t* get_begin() const{
+            return begin_;
+        }
+
+        [[nodiscard]] size_t size() const {
+            return size_;
+        }
+
+    };
+}
+
+
 
 
 
