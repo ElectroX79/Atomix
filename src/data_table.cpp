@@ -4,7 +4,7 @@
 #include "security_check.hpp"
 
 
-Atomix::DataTable Atomix::DataTable::extract(const size_t begin, const size_t end) const {
+atomix::DataTable atomix::DataTable::extract(const size_t begin, const size_t end) const {
     DataTable td;
     atomix::bounds::check_index_interval(begin, end, this->columns_.size());
     td.columns_.reserve(end - begin);
@@ -12,7 +12,7 @@ Atomix::DataTable Atomix::DataTable::extract(const size_t begin, const size_t en
     return td;
 }
 
-Atomix::DataTable Atomix::DataTable::append(const DataTable &t_data) const {
+atomix::DataTable atomix::DataTable::append(const DataTable &t_data) const {
     DataTable td;
     td.columns_ = this->columns_;
     td.columns_.insert(td.columns_.end(), t_data.columns_.begin(), t_data.columns_.end());
@@ -20,7 +20,7 @@ Atomix::DataTable Atomix::DataTable::append(const DataTable &t_data) const {
 }
 
 
-Atomix::DataTable Atomix::DataTable::erase(const size_t begin, const size_t end) const {
+atomix::DataTable atomix::DataTable::erase(const size_t begin, const size_t end) const {
     DataTable td;
     atomix::bounds::check_index_interval(begin, end, this->columns_.size());
     td.columns_.reserve(this->columns_.size() - (end - begin));

@@ -10,24 +10,36 @@
 #include "data_type.hpp"
 #include "buffer.hpp"
 #include "security_check.hpp"
+#include "mem_route.hpp"
 
-namespace Atomix {
+
+namespace atomix {
     class DataTable{
 
+#ifndef NDEBUG
+        friend class DataTableTester;
+#endif
+
+        friend struct DataTablePrinter;
+
         struct Column {
-            std::string name ;
-            std::shared_ptr<atomix::Buffer> buffer = nullptr;
+            std::string name;
+            std::vector<std::shared_ptr<atomix::mem::Buffer>> buffers;
+            size_t n_elements;
             DataType type = DataType::Undefined;
+
+            Column(std::string&& name, std::vector<std::shared_ptr<atomix::mem::Buffer>>&& buffer,const size_t n_elements,const DataType type):
+            name(std::move(name)), buffers(std::move(buffer)), n_elements(n_elements) , type(type){}
 
             Column(const Column& other) = default;
             Column(Column&& other) = default;
             Column& operator=(const Column& other) = default;
             Column& operator=(Column&& other) = default;
+            ~Column() = default;
         };
 
 
         std::vector<Column> columns_;
-
 
 
 
@@ -36,7 +48,6 @@ namespace Atomix {
         DataTable() = default;
 
         DataTable(const DataTable& other) = default;
-
         DataTable& operator=(const DataTable& other)noexcept {
             if (this != &other){
                 columns_ = other.columns_;
@@ -45,7 +56,6 @@ namespace Atomix {
         }
 
         DataTable(DataTable&& other) = default;
-
         DataTable& operator=(DataTable&& other)noexcept {
             if (this != &other){
                 columns_ = std::move(other.columns_);
@@ -53,12 +63,12 @@ namespace Atomix {
             return *this;
         }
 
+        ~DataTable() = default;
 
 
         [[nodiscard]] size_t n_columns() const {
             return columns_.size();
         }
-
 
         [[nodiscard]] std::string_view column_name(const size_t index) const {
             atomix::bounds::check_index_individual(index, columns_.size());
@@ -72,7 +82,7 @@ namespace Atomix {
 
         [[nodiscard]] size_t column_size(const size_t index) const {
             atomix::bounds::check_index_individual(index, columns_.size());
-            return columns_[index].buffer->size();
+            return columns_[index].n_elements;
         }
 
 
@@ -84,7 +94,6 @@ namespace Atomix {
          * * @note Consider  [begin, end)
          */
         [[nodiscard]]DataTable extract(size_t begin, size_t end)const;
-
 
         /**
         * @brief Appends the content of another TabularData instance to the current one.
