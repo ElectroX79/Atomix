@@ -14,6 +14,34 @@ namespace atomix {
         Bool,
         Undefined
     };
+
+    //This part is useful for metaprogramming or if we need the raw types for something
+    template <DataType DT>
+    struct TypeTraits;
+
+    template <>
+    struct TypeTraits<DataType::Int32> {
+        using type = int32_t;
+    };
+
+    template <>
+    struct TypeTraits<DataType::Float64> {
+        using type = double;
+    };
+
+    template <>
+    struct TypeTraits<DataType::String> {
+        using type = std::string;
+    };
+
+    template <>
+    struct TypeTraits<DataType::Bool> {
+        using type = bool;
+    };
+
+    template <DataType DT>
+    using type_of_t = TypeTraits<DT>::type;
+    //you can get the raw tipe with type_of_t<DT>
 }
 
 
@@ -45,13 +73,13 @@ namespace atomix::data_type_utils {
         switch (dtype)
         {
             case atomix::DataType::Int32:
-                return sizeof(int32_t);
+                return sizeof(type_of_t<DataType::Int32>);
 
             case atomix::DataType::Float64:
-                return sizeof(double);
+                return sizeof(type_of_t<DataType::Float64>);
 
             case atomix::DataType::Bool:
-                return sizeof(bool);
+                return sizeof(type_of_t<DataType::Bool>);
 
             case atomix::DataType::String:
                 return std::nullopt; //IMPORTANT: returns the size of the offset (uint32), not the string
