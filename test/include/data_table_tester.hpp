@@ -13,8 +13,8 @@
 
 #include "data_table.hpp"
 #include "data_type.hpp"
-#include "mem_route.hpp"
-#include "buffer.hpp"
+#include "mem/mem_route.hpp"
+#include "mem/buffer.hpp"
 
 
 namespace atomix {
@@ -41,8 +41,8 @@ namespace atomix {
             if (!opt.has_value()) {
                 throw std::logic_error("No suitable data type (it needs to be a fixed size data_type)");
             }
-
-            std::vector<std::shared_ptr<mem::Buffer>> buffers = mem::mem_route::allocate(v.size() * opt.value(), 64);
+            size_t chunk_size;
+            std::vector<std::shared_ptr<mem::Buffer>> buffers = mem::mem_route::allocate(v.size() * opt.value(), chunk_size, 64);
 
 
             size_t acc = 0;
@@ -53,7 +53,7 @@ namespace atomix {
 
             assert(acc == v.size() * opt.value());
 
-            const DataTable::Column column(std::move(name), std::move (buffers), v.size(), data_t);
+            const DataTable::Column column(std::move(name), std::move (buffers), v.size(), chunk_size, data_t);
             td.columns_.push_back(column);
         }
 
