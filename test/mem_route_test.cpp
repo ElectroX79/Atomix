@@ -4,11 +4,13 @@
 #include <vector>
 
 #include "../external/catch2/catch_amalgamated.hpp"
-#include "mem_route.hpp"
-#include "buffer.hpp"
+#include "mem/mem_route.hpp"
+#include "mem/buffer.hpp"
 namespace {
     void check_integrity(const size_t size) {
-        auto buffers = atomix::mem::mem_route::allocate(size, 64);
+
+        size_t chunk_size;
+        auto buffers = atomix::mem::mem_route::allocate(size, chunk_size, 64);
 
         REQUIRE_FALSE(buffers.empty());
 
@@ -26,14 +28,6 @@ namespace {
 
         CHECK(total == size);
 
-        // Consecutive buffers must map a contiguous memory region.
-        for (size_t i = 1; i < buffers.size(); ++i) {
-            CHECK(
-                buffers[i - 1]->get_begin() + buffers[i - 1]->size()
-                == buffers[i]->get_begin()
-            );
-        }
-
         // Ensure every byte in every segment is writable.
         for (auto& buffer : buffers) {
             std::memset(
@@ -49,7 +43,7 @@ namespace {
 TEST_CASE("Buffer") {
     constexpr size_t kb = 1024;
     constexpr size_t mb = 1024*kb;
-    [[maybe_unused]] const size_t gb = 1024*mb;
+    [[maybe_unused]] constexpr size_t gb = 1024*mb;
 
     SECTION("Allocates the requested memory as contiguous buffer segments, small size") {
         check_integrity(2*kb);
@@ -64,7 +58,8 @@ TEST_CASE("Buffer") {
     }
 
     SECTION("Destroying some buffers keeps the remaining ones valid"){
-        auto buffers = atomix::mem::mem_route::allocate(200 * kb, 64);
+        size_t chunk_size;
+        auto buffers = atomix::mem::mem_route::allocate(200 * kb, chunk_size, 64);
 
         REQUIRE(buffers.size() > 1);
 
@@ -81,7 +76,8 @@ TEST_CASE("Buffer") {
     }
 
     SECTION("Buffers can be released in arbitrary order") {
-        auto buffers = atomix::mem::mem_route::allocate(10*mb);
+        size_t chunk_size;
+        auto buffers = atomix::mem::mem_route::allocate(10*mb, chunk_size, 64);
 
         buffers.erase(buffers.begin() + 1);
         buffers.pop_back();

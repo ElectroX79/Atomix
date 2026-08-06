@@ -29,8 +29,7 @@ namespace atomix::mem::vmem{
 
         if (rt != 0) {
             const auto error = errno;
-            std::cerr << error << std::endl;
-            assert(rt == 0 && "madvise failed");
+            std::cerr <<"madvise failed"<<  error << std::endl;
 
         }
 

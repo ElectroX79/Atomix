@@ -8,9 +8,9 @@
 
 
 #include "data_type.hpp"
-#include "buffer.hpp"
+#include "mem/buffer.hpp"
 #include "security_check.hpp"
-#include "mem_route.hpp"
+#include "mem/mem_route.hpp"
 
 
 namespace atomix {
@@ -26,16 +26,19 @@ namespace atomix {
             std::string name;
             std::vector<std::shared_ptr<atomix::mem::Buffer>> buffers;
             size_t n_elements;
+            size_t chunk_size; // 0 if it's not chunked (implies vector<shared_ptr<buffer>>.size() <= 1)
             DataType type = DataType::Undefined;
 
-            Column(std::string&& name, std::vector<std::shared_ptr<atomix::mem::Buffer>>&& buffer,const size_t n_elements,const DataType type):
-            name(std::move(name)), buffers(std::move(buffer)), n_elements(n_elements) , type(type){}
-
-            Column(const Column& other) = default;
-            Column(Column&& other) = default;
-            Column& operator=(const Column& other) = default;
-            Column& operator=(Column&& other) = default;
-            ~Column() = default;
+            Column(std::string&& name1,
+                std::vector<std::shared_ptr<atomix::mem::Buffer>>&& buffer1,
+                const size_t n_elements1,
+                const size_t chunk_size1,
+                const DataType type1):
+            name(std::move(name1)),
+            buffers(std::move(buffer1)),
+            n_elements(n_elements1),
+            chunk_size(chunk_size1),
+            type(type1){}
         };
 
 
@@ -48,7 +51,7 @@ namespace atomix {
         DataTable() = default;
 
         DataTable(const DataTable& other) = default;
-        DataTable& operator=(const DataTable& other)noexcept {
+        DataTable& operator=(const DataTable& other){
             if (this != &other){
                 columns_ = other.columns_;
             }
@@ -56,7 +59,7 @@ namespace atomix {
         }
 
         DataTable(DataTable&& other) = default;
-        DataTable& operator=(DataTable&& other)noexcept {
+        DataTable& operator=(DataTable&& other){
             if (this != &other){
                 columns_ = std::move(other.columns_);
             }
