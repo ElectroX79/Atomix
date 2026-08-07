@@ -2,7 +2,9 @@
 #define SECURITY_CHECK_HPP
 
 
-#include <stdexcept>
+#include <iostream>
+#include <cassert>
+#include <cstdlib>
 
 
 namespace atomix::bounds{
@@ -10,18 +12,21 @@ namespace atomix::bounds{
      inline void check_index_interval(const size_t begin, const size_t end, const size_t container_size) {
           //always begin >= 0, because begin is size_t
           if (begin > end)[[unlikely]] {
-               throw std::invalid_argument("begin must be less than or equal to end");
+               std::cerr << "Contract violation: begin must be less than or equal to end" << "\n";
+               std::abort();
           }
 
           if (end > container_size)[[unlikely]] {
-               throw std::out_of_range("end must be less than or equal to container size");
+               std::cerr << "Contract violation: end must be less than or equal to container size" << "\n";
+               std::abort();
           }
      }
 
      inline void check_index_individual(const size_t index, const size_t container_size) {
           //always index >= 0, because index is size_t
           if (index >= container_size)[[unlikely]] {
-               throw std::out_of_range("index must be less than container size");
+               std::cerr << "Contract violation: index must be less than container size";
+               std::abort();
           }
      }
 

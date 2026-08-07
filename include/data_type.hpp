@@ -5,6 +5,7 @@
 #include <string>
 #include <stdexcept>
 #include <cstdint>
+#include <iostream>
 
 namespace atomix {
     enum class DataType : int{
@@ -46,7 +47,7 @@ namespace atomix {
 
 
 namespace atomix::data_type_utils {
-    inline std::string data_type_to_string(const atomix::DataType& dt) {
+    inline std::string data_type_to_string(const DataType dt) {
 
         switch (dt)
         {
@@ -69,7 +70,7 @@ namespace atomix::data_type_utils {
 
     }
 
-    constexpr std::optional<size_t> byte_size(atomix::DataType dtype){
+    constexpr std::optional<size_t> byte_size(const DataType dtype){
         switch (dtype)
         {
             case atomix::DataType::Int32:
@@ -87,9 +88,29 @@ namespace atomix::data_type_utils {
             case atomix::DataType::Undefined:
                 return std::nullopt;
         }
-        throw std::invalid_argument("Invalid data type");
+        std::cerr << "Invalid data type" << "\n";
+        std::abort();
 
     }
+
+    constexpr size_t byte_size_fixed(const DataType dtype){
+        switch (dtype)
+        {
+            case atomix::DataType::Int32:
+                return sizeof(type_of_t<DataType::Int32>);
+
+            case atomix::DataType::Float64:
+                return sizeof(type_of_t<DataType::Float64>);
+
+            case atomix::DataType::Bool:
+                return sizeof(type_of_t<DataType::Bool>);
+
+            default:
+                std::cerr << "Data type must be fixed size" << "\n";
+                std::abort();
+        }
+    }
+
 
 }
 

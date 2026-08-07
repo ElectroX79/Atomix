@@ -5,12 +5,13 @@
 #include <stdexcept>
 #include <string_view>
 #include <memory>
+#include <iostream>
+#include <cstdlib>
 
 
 #include "data_type.hpp"
 #include "mem/buffer.hpp"
 #include "security_check.hpp"
-#include "mem/mem_route.hpp"
 
 
 namespace atomix {
@@ -26,7 +27,7 @@ namespace atomix {
             std::string name;
             std::vector<std::shared_ptr<atomix::mem::Buffer>> buffers;
             size_t n_elements;
-            size_t chunk_size; // 0 if it's not chunked (implies vector<shared_ptr<buffer>>.size() <= 1)
+            size_t chunk_size; // 0 if it's not chunked (if chunk_size == 0 -> vector<shared_ptr<buffer>>.size() <= 1)
             DataType type = DataType::Undefined;
 
             Column(std::string&& name1,
@@ -43,6 +44,45 @@ namespace atomix {
 
 
         std::vector<Column> columns_;
+
+        /** @brief
+         * * @param col_index indicates which column of columns_
+         * * @param offset indicates the logical offset (not the physical, but the x element)
+         * * @param buffer_index returned value to know which buffer access
+         * * @param remainder returned value that represent the offset inside the buffer
+         *
+        **/
+        void get_buffer_pos(const size_t col_index, const size_t offset, size_t& buffer_index, size_t& remainder)const{
+            const size_t chunk_size = columns_[col_index].chunk_size;
+            const size_t byte_size = data_type_utils::byte_size_fixed(columns_[col_index].type);
+
+            if (chunk_size == 0) {
+                buffer_index = 0;
+                remainder = offset* byte_size ;
+                return;
+            }
+
+            buffer_index = offset* byte_size  / chunk_size;
+            remainder = offset* byte_size  % chunk_size;
+        }
+
+        template<DataType DT>
+        void get_buffer_pos(const size_t col_index, const size_t offset, size_t& buffer_index, size_t& remainder)const{
+            using T = type_of_t<DT>;
+            const size_t chunk_size = columns_[col_index].chunk_size;
+
+            if (chunk_size == 0) {
+                buffer_index = 0;
+                remainder = offset*sizeof(T);
+                return;
+            }
+
+            buffer_index = offset*sizeof(T) / chunk_size;
+            remainder = offset*sizeof(T)  % chunk_size;
+        }
+
+
+
 
 
 
@@ -88,6 +128,30 @@ namespace atomix {
             return columns_[index].n_elements;
         }
 
+        template<DataType DT>
+        [[nodiscard]] type_of_t<DT> at(const size_t col_index,const size_t offset)const{
+            using T = type_of_t<DT>;
+
+            bounds::check_index_individual(col_index, columns_.size());
+            bounds::check_index_individual(offset, columns_[col_index].n_elements);
+
+            if (DT != columns_[col_index].type) {
+                std::cerr << "Contract violation: data type mismatch (DataTable::at)" << "\n";
+                std::abort();
+            }
+
+            if constexpr (DT != DataType::String){
+                size_t buffer_index, remainder;
+                get_buffer_pos<DT>(col_index, offset, buffer_index, remainder);
+                return *reinterpret_cast<T*>(columns_[col_index].buffers[buffer_index]->get_begin() + remainder);
+            }
+            else{
+               //TO-DO: do when implemented string support
+                throw std::logic_error("String support not implemented yet");
+            }
+
+
+        }
 
 
         /**

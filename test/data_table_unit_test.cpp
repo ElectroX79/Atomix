@@ -67,19 +67,31 @@ TEST_CASE("DataTable basic representation", "[atomix::DataTable][Edge]") {
     }
 }
 
+TEST_CASE("DataTable: DataTabla::at() integrity", "[atomix::DataTable][default]") {
+
+    const atomix::DataTable td = make_three_column_table();
+
+    CHECK(td.at<atomix::DataType::Int32>(0, 0) == 1);
+    CHECK(td.at<atomix::DataType::Int32>(0, 1) == 2);
+    CHECK(td.at<atomix::DataType::Int32>(0, 2) == 3);
+
+    CHECK(td.at<atomix::DataType::Float64>(1, 0) == 1.5);
+    CHECK(td.at<atomix::DataType::Float64>(1, 1) == 2.5);
+    CHECK(td.at<atomix::DataType::Float64>(1, 2) == 3.5);
+
+    CHECK(td.at<atomix::DataType::Bool>(2, 0) == true);
+    CHECK(td.at<atomix::DataType::Bool>(2, 1) == false);
+    CHECK(td.at<atomix::DataType::Bool>(2, 2) == true);
+
+
+}
+
 TEST_CASE("DataTable: empty table has no columns", "[atomix::DataTable][empty]") {
     const atomix::DataTable table;
 
     CHECK(table.n_columns() == 0);
 }
 
-TEST_CASE("DataTable: empty table rejects invalid metadata access", "[atomix::DataTable][empty][bounds]") {
-    const atomix::DataTable table;
-
-    CHECK_THROWS(table.column_name(0));
-    CHECK_THROWS(table.column_datatype(0));
-    CHECK_THROWS(table.column_size(0));
-}
 
 TEST_CASE("DataTable: empty table supports zero-length extract and erase", "[atomix::DataTable][empty][range]") {
     const atomix::DataTable table;
@@ -91,17 +103,6 @@ TEST_CASE("DataTable: empty table supports zero-length extract and erase", "[ato
     CHECK(erased.n_columns() == 0);
 }
 
-TEST_CASE("DataTable: empty table rejects out-of-range extract and erase", "[atomix::DataTable][empty][bounds]") {
-    const atomix::DataTable table;
-
-    CHECK_THROWS(table.extract(0, 1));
-    CHECK_THROWS(table.extract(1, 1));
-    CHECK_THROWS(table.extract(1, 0));
-
-    CHECK_THROWS(table.erase(0, 1));
-    CHECK_THROWS(table.erase(1, 1));
-    CHECK_THROWS(table.erase(1, 0));
-}
 
 TEST_CASE("DataTable: artificial append creates fixed-size columns with metadata", "[atomix::DataTable][metadata]") {
     const std::vector<int32_t> ids{1, 2, 3};
@@ -133,33 +134,6 @@ TEST_CASE("DataTable: artificial append ignores empty vectors", "[atomix::DataTa
     CHECK(table.n_columns() == 0);
 }
 
-TEST_CASE("DataTable: artificial append rejects unsupported variable-size and undefined types", "[atomix::DataTable][metadata][error]") {
-    const std::vector<uint8_t> raw_bytes{1, 2, 3};
-
-    atomix::DataTable table;
-
-    CHECK_THROWS_AS(
-        atomix::DataTableTester::artificial_append(table, raw_bytes, atomix::DataType::String, "string_column"),
-        std::logic_error
-    );
-    CHECK(table.n_columns() == 0);
-
-    CHECK_THROWS_AS(
-        atomix::DataTableTester::artificial_append(table, raw_bytes, atomix::DataType::Undefined, "undefined_column"),
-        std::logic_error
-    );
-    CHECK(table.n_columns() == 0);
-}
-
-TEST_CASE("DataTable: column getters reject index equal to column count", "[atomix::DataTable][bounds]") {
-    const atomix::DataTable table = make_three_column_table();
-
-    REQUIRE(table.n_columns() == 3);
-
-    CHECK_THROWS(table.column_name(3));
-    CHECK_THROWS(table.column_datatype(3));
-    CHECK_THROWS(table.column_size(3));
-}
 
 TEST_CASE("DataTable: extract can select all columns", "[atomix::DataTable][extract]") {
     const atomix::DataTable table = make_three_column_table();
@@ -209,14 +183,6 @@ TEST_CASE("DataTable: extract can select prefix, middle, suffix, and empty range
 
         CHECK(extracted.n_columns() == 0);
     }
-}
-
-TEST_CASE("DataTable: extract rejects invalid intervals", "[atomix::DataTable][extract][bounds]") {
-    const atomix::DataTable table = make_three_column_table();
-
-    CHECK_THROWS(table.extract(2, 1));
-    CHECK_THROWS(table.extract(0, table.n_columns() + 1));
-    CHECK_THROWS(table.extract(table.n_columns() + 1, table.n_columns() + 1));
 }
 
 TEST_CASE("DataTable: erase can remove all columns", "[atomix::DataTable][erase]") {
@@ -271,14 +237,6 @@ TEST_CASE("DataTable: erase can remove prefix, middle, suffix, and empty ranges"
         check_column(erased, 1, "values", atomix::DataType::Float64, 3);
         check_column(erased, 2, "flags", atomix::DataType::Bool, 3);
     }
-}
-
-TEST_CASE("DataTable: erase rejects invalid intervals", "[atomix::DataTable][erase][bounds]") {
-    const atomix::DataTable table = make_three_column_table();
-
-    CHECK_THROWS(table.erase(2, 1));
-    CHECK_THROWS(table.erase(0, table.n_columns() + 1));
-    CHECK_THROWS(table.erase(table.n_columns() + 1, table.n_columns() + 1));
 }
 
 TEST_CASE("DataTable: append combines columns in order", "[atomix::DataTable][append]") {
