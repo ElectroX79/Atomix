@@ -36,13 +36,10 @@ namespace atomix {
             if (v.empty()) {
                 return;
             }
-
-            auto opt = data_type_utils::byte_size(data_t);
-            if (!opt.has_value()) {
-                throw std::logic_error("No suitable data type (it needs to be a fixed size data_type)");
-            }
+            const size_t byte_size = data_type_utils::byte_size_fixed(data_t);
+            
             size_t chunk_size;
-            std::vector<std::shared_ptr<mem::Buffer>> buffers = mem::mem_route::allocate(v.size() * opt.value(), chunk_size, 64);
+            std::vector<std::shared_ptr<mem::Buffer>> buffers = mem::mem_route::allocate(v.size() * byte_size, chunk_size, 64);
 
 
             size_t acc = 0;
@@ -51,7 +48,7 @@ namespace atomix {
                 acc += buffer->size();
             }
 
-            assert(acc == v.size() * opt.value());
+            assert(acc == v.size() * byte_size);
 
             const DataTable::Column column(std::move(name), std::move (buffers), v.size(), chunk_size, data_t);
             td.columns_.push_back(column);
