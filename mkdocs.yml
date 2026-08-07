@@ -1,0 +1,67 @@
+site_name: Atomix
+theme:
+  name: material
+  palette:
+    # Dark mode
+    - scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+    # Light mode
+    - scheme: default
+      primary: blue
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+nav:
+  - Home: index.md
+
+  - Getting Started:
+    - Introduction: getting-started/introduction.md
+    - Installation: getting-started/installation.md
+    - Building: getting-started/building.md
+
+  - Architecture:
+    - Introduction: architecture/introduction.md
+    - Data Table: architecture/data_table.md
+    - Memory management: architecture/mem_management.md
+
+  - Internals:
+    - Introduction: internals/introduction.md
+    - Data:
+      - Data Type: internals/data/data_type.md
+      - Column: internals/data/column.md
+      - Data Table: internals/data/data_table.md
+    - Memory:
+      - Buffer: internals/mem/buffer.md
+      - Aligned allocator: internals/mem/aligned_allocator.md
+      - Mem route: internals/mem/mem_route.md
+      - Virtual memory: internals/mem/vmem.md
+
+  - Architecture Decision Records:
+      - ADR-0001: adr/adr-0001-shared_ownership_buffer.md
+      - ADR-0002: adr/adr-0002-chunked_column_storage.md
+      - ADR-0003: adr/adr-0003-removal_vmem_chunk.md
+
+  - Benchmarks:
+    - Introduction: benchmarks/introduction.md
+    - MMap vs Aligned alloc: benchmarks/vmem_vs_align_alloc.md
+    - Methodology: benchmarks/methodology.md
+
+  - Future features:
+    - Introduction: future_features/introduction.md
+    - Potential features or changes:
+      - Basic operations: future_features/potential_features_changes/basic_data_table_ops.md
+      - Custom allocator: future_features/potential_features_change/custom_allocator.md
+      - IO: future_features/potential_features_change/io.md
+    - Proposals:
+      - Concurrency: future_features/proposals/concurrency.md
+
+  - Contributing:
+    - Introduction: contributing/introduction.md
+    - What to do: contributing/what_to_do.md
