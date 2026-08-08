@@ -8,11 +8,12 @@
 #include <iostream>
 
 namespace atomix {
-    enum class DataType : int{
+    enum class DataType : uint8_t{
         Int32,
         Float64,
-        String,
+        List,
         Bool,
+        Char,
         Undefined
     };
 
@@ -31,13 +32,13 @@ namespace atomix {
     };
 
     template <>
-    struct TypeTraits<DataType::String> {
-        using type = std::string;
+    struct TypeTraits<DataType::Bool> {
+        using type = bool;
     };
 
     template <>
-    struct TypeTraits<DataType::Bool> {
-        using type = bool;
+    struct TypeTraits<DataType::Char> {
+        using type = char;
     };
 
     template <DataType DT>
@@ -60,8 +61,11 @@ namespace atomix::data_type_utils {
             case atomix::DataType::Bool:
                 return "Bool";
 
-            case atomix::DataType::String:
-                return "String";
+            case atomix::DataType::List:
+                return "List";
+
+            case atomix::DataType::Char:
+                return "Char";
 
             case atomix::DataType::Undefined:
                 return "Undefined";
@@ -82,8 +86,11 @@ namespace atomix::data_type_utils {
             case atomix::DataType::Bool:
                 return sizeof(type_of_t<DataType::Bool>);
 
-            case atomix::DataType::String:
-                return std::nullopt; //IMPORTANT: returns the size of the offset (uint32), not the string
+            case atomix::DataType::Char:
+                return sizeof(type_of_t<DataType::Char>);
+
+            case atomix::DataType::List:
+                return std::nullopt;
 
             case atomix::DataType::Undefined:
                 return std::nullopt;
@@ -104,6 +111,9 @@ namespace atomix::data_type_utils {
 
             case atomix::DataType::Bool:
                 return sizeof(type_of_t<DataType::Bool>);
+
+            case atomix::DataType::Char:
+                return sizeof(type_of_t<DataType::Char>);
 
             default:
                 std::cerr << "Data type must be fixed size" << "\n";
