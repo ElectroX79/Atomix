@@ -23,33 +23,47 @@ namespace atomix {
 
         friend struct DataTablePrinter;
 
+        struct ListMetadata{
+            std::vector<uint32_t> offsets;
+            uint32_t last_used_byte;
+            DataType type; //CANNOT BE LIST, it doesn't accept recursive types yet.
+        };
+
         struct Column {
             std::string name;
             std::vector<std::shared_ptr<atomix::mem::Buffer>> buffers;
+            std::vector<ListMetadata> list_metadata;
             size_t n_elements;
             size_t chunk_size; // 0 if it's not chunked (if chunk_size == 0 -> vector<shared_ptr<buffer>>.size() <= 1)
             DataType type = DataType::Undefined;
 
             Column(std::string&& name1,
                 std::vector<std::shared_ptr<atomix::mem::Buffer>>&& buffer1,
+                std::vector<ListMetadata>&& list_metadata1,
                 const size_t n_elements1,
                 const size_t chunk_size1,
                 const DataType type1):
             name(std::move(name1)),
             buffers(std::move(buffer1)),
+            list_metadata(std::move(list_metadata1)),
             n_elements(n_elements1),
             chunk_size(chunk_size1),
             type(type1){}
         };
 
 
+
         std::vector<Column> columns_;
+
+
+        //primitives methods
+
 
         /** @brief
          * * @param col_index indicates which column of columns_
          * * @param offset indicates the logical offset (not the physical, but the x element)
          * * @param buffer_index returned value to know which buffer access
-         * * @param remainder returned value that represent the offset inside the buffer
+         * * @param remainder returned value that represents the offset inside the buffer
          *
         **/
         void get_buffer_pos(const size_t col_index, const size_t offset, size_t& buffer_index, size_t& remainder)const{
@@ -140,13 +154,13 @@ namespace atomix {
                 std::abort();
             }
 
-            if constexpr (DT != DataType::String){
+            if constexpr (DT != DataType::List){
                 size_t buffer_index, remainder;
                 get_buffer_pos<DT>(col_index, offset, buffer_index, remainder);
                 return *reinterpret_cast<T*>(columns_[col_index].buffers[buffer_index]->get_begin() + remainder);
             }
             else{
-               //TO-DO: do when implemented string support
+               //TO-DO: do when implemented list support
                 throw std::logic_error("String support not implemented yet");
             }
 

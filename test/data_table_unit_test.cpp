@@ -9,17 +9,20 @@
 #include "include/data_table_tester.hpp"
 #include "data_table_printer.hpp"
 #include "data_table.hpp"
+#include "data_type.hpp"
 
 namespace {
-    atomix::DataTable make_three_column_table() {
+    atomix::DataTable make_four_column_table() {
         const std::vector<int32_t> ids{1, 2, 3};
         const std::vector<double> values{1.5, 2.5, 3.5};
         const std::vector<uint8_t> flags{1, 0, 1};
+        const std::vector<std::string> names{"John", "Pork", "Call"};
 
         atomix::DataTable table;
         atomix::DataTableTester::artificial_append(table, ids, atomix::DataType::Int32, "ids");
         atomix::DataTableTester::artificial_append(table, values, atomix::DataType::Float64, "values");
         atomix::DataTableTester::artificial_append(table, flags, atomix::DataType::Bool, "flags");
+        atomix::DataTableTester::artificial_append(table, names, atomix::DataType::List, "names");
 
         return table;
     }
@@ -69,7 +72,7 @@ TEST_CASE("DataTable basic representation", "[atomix::DataTable][Edge]") {
 
 TEST_CASE("DataTable: DataTabla::at() integrity", "[atomix::DataTable][default]") {
 
-    const atomix::DataTable td = make_three_column_table();
+    const atomix::DataTable td = make_four_column_table();
 
     CHECK(td.at<atomix::DataType::Int32>(0, 0) == 1);
     CHECK(td.at<atomix::DataType::Int32>(0, 1) == 2);
@@ -136,19 +139,20 @@ TEST_CASE("DataTable: artificial append ignores empty vectors", "[atomix::DataTa
 
 
 TEST_CASE("DataTable: extract can select all columns", "[atomix::DataTable][extract]") {
-    const atomix::DataTable table = make_three_column_table();
+    const atomix::DataTable table = make_four_column_table();
 
     const atomix::DataTable extracted = table.extract(0, table.n_columns());
 
-    REQUIRE(extracted.n_columns() == 3);
+    REQUIRE(extracted.n_columns() == 4);
 
     check_column(extracted, 0, "ids", atomix::DataType::Int32, 3);
     check_column(extracted, 1, "values", atomix::DataType::Float64, 3);
     check_column(extracted, 2, "flags", atomix::DataType::Bool, 3);
+    check_column(extracted, 3, "names", atomix::DataType::List, 3);
 }
 
 TEST_CASE("DataTable: extract can select prefix, middle, suffix, and empty ranges", "[atomix::DataTable][extract]") {
-    const atomix::DataTable table = make_three_column_table();
+    const atomix::DataTable table = make_four_column_table();
 
     SECTION("prefix") {
         const atomix::DataTable extracted = table.extract(0, 2);
@@ -186,7 +190,7 @@ TEST_CASE("DataTable: extract can select prefix, middle, suffix, and empty range
 }
 
 TEST_CASE("DataTable: erase can remove all columns", "[atomix::DataTable][erase]") {
-    const atomix::DataTable table = make_three_column_table();
+    const atomix::DataTable table = make_four_column_table();
 
     const atomix::DataTable erased = table.erase(0, table.n_columns());
 
@@ -194,48 +198,53 @@ TEST_CASE("DataTable: erase can remove all columns", "[atomix::DataTable][erase]
 }
 
 TEST_CASE("DataTable: erase can remove prefix, middle, suffix, and empty ranges", "[atomix::DataTable][erase]") {
-    const atomix::DataTable table = make_three_column_table();
+    const atomix::DataTable table = make_four_column_table();
 
     SECTION("prefix") {
         const atomix::DataTable erased = table.erase(0, 1);
 
-        REQUIRE(erased.n_columns() == 2);
+        REQUIRE(erased.n_columns() == 3);
         check_column(erased, 0, "values", atomix::DataType::Float64, 3);
         check_column(erased, 1, "flags", atomix::DataType::Bool, 3);
+        check_column(erased, 2, "names", atomix::DataType::List, 3);
     }
 
     SECTION("middle single column") {
         const atomix::DataTable erased = table.erase(1, 2);
 
-        REQUIRE(erased.n_columns() == 2);
+        REQUIRE(erased.n_columns() == 3);
         check_column(erased, 0, "ids", atomix::DataType::Int32, 3);
         check_column(erased, 1, "flags", atomix::DataType::Bool, 3);
+        check_column(erased, 2, "names", atomix::DataType::List, 3);
     }
 
     SECTION("suffix") {
         const atomix::DataTable erased = table.erase(2, 3);
 
-        REQUIRE(erased.n_columns() == 2);
+        REQUIRE(erased.n_columns() == 3);
         check_column(erased, 0, "ids", atomix::DataType::Int32, 3);
         check_column(erased, 1, "values", atomix::DataType::Float64, 3);
+        check_column(erased, 2, "names", atomix::DataType::List, 3);
     }
 
     SECTION("empty range at beginning keeps all columns") {
         const atomix::DataTable erased = table.erase(0, 0);
 
-        REQUIRE(erased.n_columns() == 3);
+        REQUIRE(erased.n_columns() == 4);
         check_column(erased, 0, "ids", atomix::DataType::Int32, 3);
         check_column(erased, 1, "values", atomix::DataType::Float64, 3);
         check_column(erased, 2, "flags", atomix::DataType::Bool, 3);
+        check_column(table, 3, "names", atomix::DataType::List, 3);
     }
 
     SECTION("empty range at end keeps all columns") {
         const atomix::DataTable erased = table.erase(table.n_columns(), table.n_columns());
 
-        REQUIRE(erased.n_columns() == 3);
+        REQUIRE(erased.n_columns() == 4);
         check_column(erased, 0, "ids", atomix::DataType::Int32, 3);
         check_column(erased, 1, "values", atomix::DataType::Float64, 3);
         check_column(erased, 2, "flags", atomix::DataType::Bool, 3);
+        check_column(erased, 3, "names", atomix::DataType::List, 3);
     }
 }
 
@@ -298,60 +307,65 @@ TEST_CASE("DataTable: append with self duplicates metadata", "[atomix::DataTable
 }
 
 TEST_CASE("DataTable: copy constructor preserves table metadata", "[atomix::DataTable][copy]") {
-    const atomix::DataTable original = make_three_column_table();
+    const atomix::DataTable original = make_four_column_table();
 
     const atomix::DataTable copied = original;
 
-    REQUIRE(copied.n_columns() == 3);
+    REQUIRE(copied.n_columns() == 4);
     check_column(copied, 0, "ids", atomix::DataType::Int32, 3);
     check_column(copied, 1, "values", atomix::DataType::Float64, 3);
     check_column(copied, 2, "flags", atomix::DataType::Bool, 3);
+    check_column(copied, 3, "names", atomix::DataType::List, 3);
 }
 
 TEST_CASE("DataTable: copy assignment preserves table metadata", "[atomix::DataTable][copy]") {
-    const atomix::DataTable source = make_three_column_table();
+    const atomix::DataTable source = make_four_column_table();
 
     atomix::DataTable target;
     target = source;
 
-    REQUIRE(target.n_columns() == 3);
+    REQUIRE(target.n_columns() == 4);
     check_column(target, 0, "ids", atomix::DataType::Int32, 3);
     check_column(target, 1, "values", atomix::DataType::Float64, 3);
     check_column(target, 2, "flags", atomix::DataType::Bool, 3);
+    check_column(target, 3, "names", atomix::DataType::List, 3);
 }
 
 TEST_CASE("DataTable: self copy assignment keeps table valid", "[atomix::DataTable][copy]") {
-    atomix::DataTable table = make_three_column_table();
+    atomix::DataTable table = make_four_column_table();
 
     table = table;
 
-    REQUIRE(table.n_columns() == 3);
+    REQUIRE(table.n_columns() == 4);
     check_column(table, 0, "ids", atomix::DataType::Int32, 3);
     check_column(table, 1, "values", atomix::DataType::Float64, 3);
     check_column(table, 2, "flags", atomix::DataType::Bool, 3);
+    check_column(table, 3, "names", atomix::DataType::List, 3);
 }
 
 TEST_CASE("DataTable: move constructor transfers table metadata", "[atomix::DataTable][move]") {
-    atomix::DataTable source = make_three_column_table();
+    atomix::DataTable source = make_four_column_table();
 
     atomix::DataTable moved = std::move(source);
 
-    REQUIRE(moved.n_columns() == 3);
+    REQUIRE(moved.n_columns() == 4);
     check_column(moved, 0, "ids", atomix::DataType::Int32, 3);
     check_column(moved, 1, "values", atomix::DataType::Float64, 3);
     check_column(moved, 2, "flags", atomix::DataType::Bool, 3);
+    check_column(moved, 3, "names", atomix::DataType::List, 3);
 }
 
 TEST_CASE("DataTable: move assignment transfers table metadata", "[atomix::DataTable][move]") {
-    atomix::DataTable source = make_three_column_table();
+    atomix::DataTable source = make_four_column_table();
 
     atomix::DataTable target;
     target = std::move(source);
 
-    REQUIRE(target.n_columns() == 3);
+    REQUIRE(target.n_columns() == 4);
     check_column(target, 0, "ids", atomix::DataType::Int32, 3);
     check_column(target, 1, "values", atomix::DataType::Float64, 3);
     check_column(target, 2, "flags", atomix::DataType::Bool, 3);
+    check_column(target, 3, "names", atomix::DataType::List, 3);
 }
 
 TEST_CASE("DataTable: int32 numeric limits are accepted", "[atomix::DataTable][limits]") {
@@ -433,14 +447,16 @@ TEST_CASE("DataTable: large columns can span multiple buffers", "[atomix::DataTa
 }
 
 TEST_CASE("DataTable: composed extract, erase, and append preserve resulting order", "[atomix::DataTable][composition]") {
-    const atomix::DataTable table = make_three_column_table();
+    const atomix::DataTable table = make_four_column_table();
 
     const atomix::DataTable only_ids = table.extract(0, 1);
     const atomix::DataTable without_ids = table.erase(0, 1);
     const atomix::DataTable recombined = without_ids.append(only_ids);
 
-    REQUIRE(recombined.n_columns() == 3);
+    REQUIRE(recombined.n_columns() == 4);
     check_column(recombined, 0, "values", atomix::DataType::Float64, 3);
     check_column(recombined, 1, "flags", atomix::DataType::Bool, 3);
-    check_column(recombined, 2, "ids", atomix::DataType::Int32, 3);
+    check_column(recombined, 2, "names", atomix::DataType::List, 3);
+    check_column(recombined, 3, "ids", atomix::DataType::Int32, 3);
+
 }
