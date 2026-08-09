@@ -10,8 +10,7 @@
 namespace atomix::mem {
 
     enum class AllocationType : uint8_t {
-        simple,
-        chunked,
+        aligned_alloc,
         none,
     };
 }

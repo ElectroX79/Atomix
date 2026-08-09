@@ -18,11 +18,11 @@ namespace atomix::mem::mem_route{
 
         for (size_t i = 0; i < size / (chunk_size); ++i) {
             uint8_t* ptr = aligned_allocator::allocate(chunk_size);
-            v.push_back(std::make_shared<Buffer>(ptr, chunk_size));
+            v.push_back(std::make_shared<Buffer>(ptr, chunk_size, AllocationType::aligned_alloc));
         }
         if (remainder != 0){
             uint8_t* ptr = aligned_allocator::allocate(remainder);
-            v.push_back(std::make_shared<Buffer>(ptr, remainder));
+            v.push_back(std::make_shared<Buffer>(ptr, remainder, AllocationType::aligned_alloc));
         }
         return v;
     }
@@ -34,7 +34,7 @@ namespace atomix::mem::mem_route{
         if (size < paged_min) {
             uint8_t* ptr = aligned_allocator::allocate(size, alignment);
             chunk_size = 0;
-            return std::vector<std::shared_ptr<Buffer>>{std::make_shared<Buffer> (ptr, size)};
+            return std::vector<std::shared_ptr<Buffer>>{std::make_shared<Buffer> (ptr, size, AllocationType::aligned_alloc)};
         }
 
         chunk_size = 64 * kb;
@@ -42,8 +42,18 @@ namespace atomix::mem::mem_route{
     }
 
 
-    void deallocate(uint8_t* ptr) {
-        aligned_allocator::deallocate(ptr);
+    void deallocate(uint8_t* ptr, const AllocationType alloc_t) {
+        switch (alloc_t) {
+
+            case AllocationType::aligned_alloc:
+                aligned_allocator::deallocate(ptr);
+                return;
+
+            case AllocationType::none:
+                throw std::runtime_error("Allocation type is none");
+                return;
+
+        }
     }
 
 
