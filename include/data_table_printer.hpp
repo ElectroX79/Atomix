@@ -25,7 +25,7 @@ namespace atomix{
                     abort();
                 }
                 for (const auto& buffer : dt.columns_[i].buffers ) {
-                    for (size_t k = 0; k < buffer->size(); k+=opt.value()) {
+                    for (size_t k = 0; k < buffer->get_size(); k+=opt.value()) {
 
                         switch (dt.column_datatype(i)) {
                             case DataType::Bool:

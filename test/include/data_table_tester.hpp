@@ -47,8 +47,8 @@ namespace atomix {
 
                 size_t acc = 0;
                 for (const auto& buffer : buffers) {
-                    memcpy(buffer->get_begin(),(reinterpret_cast<const uint8_t*> (v.data()) + acc), buffer->size());
-                    acc += buffer->size();
+                    memcpy(buffer->get_begin(),(reinterpret_cast<const uint8_t*> (v.data()) + acc), buffer->get_size());
+                    acc += buffer->get_size();
                 }
                 assert(acc == v.size() * byte_size);
                 std::vector<DataTable::ListMetadata> list_metadata{};
