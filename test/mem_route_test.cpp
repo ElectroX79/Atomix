@@ -21,9 +21,9 @@ namespace {
         for (const auto& buffer : buffers) {
             REQUIRE(buffer != nullptr);
             CHECK(buffer->get_begin() != nullptr);
-            CHECK(buffer->size() > 0);
+            CHECK(buffer->get_size() > 0);
 
-            total += buffer->size();
+            total += buffer->get_size();
         }
 
         CHECK(total == size);
@@ -33,7 +33,7 @@ namespace {
             std::memset(
                 buffer->get_begin(),
                 0xAB,
-                buffer->size()
+                buffer->get_size()
             );
         }
     }
@@ -71,7 +71,7 @@ TEST_CASE("Buffer") {
         std::memset(
             survivor->get_begin(),
             42,
-            survivor->size()
+            survivor->get_size()
         );
     }
 
