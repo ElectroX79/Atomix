@@ -9,8 +9,8 @@
 namespace {
     void check_integrity(const size_t size) {
 
-        size_t chunk_size;
-        auto buffers = atomix::mem::mem_route::allocate(size, chunk_size, 64);
+        size_t chunk_size[[maybe_unused]] = 64*1024; //64kb
+        auto buffers = atomix::mem::mem_route::allocate(size, 64);
 
         REQUIRE_FALSE(buffers.empty());
 
@@ -58,8 +58,8 @@ TEST_CASE("Buffer") {
     }
 
     SECTION("Destroying some buffers keeps the remaining ones valid"){
-        size_t chunk_size;
-        auto buffers = atomix::mem::mem_route::allocate(200 * kb, chunk_size, 64);
+        size_t chunk_size[[maybe_unused]] = 64*1024; //64kb
+        auto buffers = atomix::mem::mem_route::allocate(200 * kb, 64);
 
         REQUIRE(buffers.size() > 1);
 
@@ -76,8 +76,8 @@ TEST_CASE("Buffer") {
     }
 
     SECTION("Buffers can be released in arbitrary order") {
-        size_t chunk_size;
-        auto buffers = atomix::mem::mem_route::allocate(10*mb, chunk_size, 64);
+        size_t chunk_size[[maybe_unused]] = 64*1024; //64kb
+        auto buffers = atomix::mem::mem_route::allocate(10*mb, 64);
 
         buffers.erase(buffers.begin() + 1);
         buffers.pop_back();
