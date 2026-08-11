@@ -50,8 +50,8 @@ namespace atomix::mem::mem_route{
         constexpr uint64_t mb = 1024 * kb;
 
         constexpr uint64_t paged_min = 16 * kb;
-        constexpr uint64_t paged_chunked_min = 128 * kb; //chunks of 64 kb
-        constexpr uint64_t paged_big_chunked_min = 256 * mb; //chunks of 1mb
+        constexpr uint64_t paged_chunked_min = 256 * kb; //chunks of 64 kb
+        constexpr uint64_t paged_big_chunked_min = 16 * mb; //chunks of 1mb
 
 
         if (size < paged_min) {

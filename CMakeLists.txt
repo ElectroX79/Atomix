@@ -2,12 +2,12 @@
 cmake_minimum_required(VERSION 3.15)
 project(Atomix VERSION 0.1 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_link_options(-fsanitize=address,undefined)
-add_compile_options(-march=native -Wall -Wextra -fsanitize=address,undefined -fno-omit-frame-pointer -g -O2)
+# add_link_options(-fsanitize=address,undefined)
+add_compile_options(-march=native -Wall -Wextra -fno-omit-frame-pointer -g -O2)
 
 
 #Library AtomixCore

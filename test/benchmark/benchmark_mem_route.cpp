@@ -6,8 +6,8 @@
 
 #include "../external/catch2/catch_amalgamated.hpp"
 #include "../include/data_table_tester.hpp"
-#include "data_table.hpp"
-#include "data_type.hpp"
+#include "../include/data_table.hpp"
+#include "../include/data_type.hpp"
 
 
 
@@ -58,9 +58,8 @@ namespace {
 }
 
 
-TEST_CASE("Small size, alloc + dealloc", "[mult_k][alloc + dealloc]") {
-    constexpr size_t k = 1024;
-    constexpr size_t mult = k;
+TEST_CASE("Small size, alloc + dealloc", "[mult_256][alloc + dealloc]") {
+    constexpr size_t mult = 256;
 
     constexpr size_t repeat = 1;
 
@@ -71,9 +70,8 @@ TEST_CASE("Small size, alloc + dealloc", "[mult_k][alloc + dealloc]") {
     };
 }
 
-TEST_CASE("Small size, access", "[mult_k][access]") {
-    constexpr size_t k = 1024;
-    constexpr size_t mult = k;
+TEST_CASE("Small size, access", "[mult_256][access]") {
+    constexpr size_t mult = 256;
 
     const atomix::DataTable table = make_three_column_table(mult);
     BENCHMARK("Access") {
@@ -85,9 +83,9 @@ TEST_CASE("Small size, access", "[mult_k][access]") {
 
 //
 
-TEST_CASE("Medium size, alloc + dealloc", "[mult_32k][alloc + dealloc]") {
+TEST_CASE("Medium size, alloc + dealloc", "[mult_8k][alloc + dealloc]") {
     constexpr size_t k = 1024;
-    constexpr size_t mult = 32*k;
+    constexpr size_t mult = 8*k;
 
     constexpr size_t repeat = 1;
 
@@ -98,9 +96,9 @@ TEST_CASE("Medium size, alloc + dealloc", "[mult_32k][alloc + dealloc]") {
     };
 }
 
-TEST_CASE("Medium size, access", "[mult_32k][access]") {
+TEST_CASE("Medium size, access", "[mult_8k][access]") {
     constexpr size_t k = 1024;
-    constexpr size_t mult = 32*k;
+    constexpr size_t mult = 8*k;
 
     const atomix::DataTable table = make_three_column_table(mult);
     BENCHMARK("Access") {
@@ -140,9 +138,9 @@ TEST_CASE("Big size, access", "[mult_128k][access]") {
 //
 
 
-TEST_CASE("Huge size, alloc + dealloc", "[mult_1m][alloc + dealloc]") {
+TEST_CASE("Huge size, alloc + dealloc", "[mult_8m][alloc + dealloc]") {
     constexpr size_t k = 1024;
-    constexpr size_t mult = k*k;
+    constexpr size_t mult = 8*k*k;
 
     constexpr size_t repeat = 1;
 
@@ -154,9 +152,9 @@ TEST_CASE("Huge size, alloc + dealloc", "[mult_1m][alloc + dealloc]") {
 
 }
 
-TEST_CASE("Huge size, access", "[mult_1m][access]") {
+TEST_CASE("Huge size, access", "[mult_8m][access]") {
     constexpr size_t k = 1024;
-    constexpr size_t mult = k*k;
+    constexpr size_t mult = 8*k*k;
 
     const atomix::DataTable table = make_three_column_table(mult);
     BENCHMARK("Access") {

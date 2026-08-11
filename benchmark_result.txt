@@ -1,5 +1,5 @@
-viejo: Filters: [mult_k] [alloc + dealloc]
-Randomness seeded to: 1998650712
+Filters: [mult_256] [alloc + dealloc]
+Randomness seeded to: 3532411366
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 benchmark_mem_route is a Catch2 v3.15.1 host application.
@@ -15,33 +15,31 @@ benchmark name                       samples       iterations    est run time
                                      mean          low mean      high mean
                                      std dev       low std dev   high std dev
 -------------------------------------------------------------------------------
-Multiple alloc + dealloc                       100             1    28.8127 ms 
-
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:61: FAILED:
-due to a fatal error condition:
-  SIGINT - Terminal interrupt signal
+Multiple alloc + dealloc                       100            13     2.1476 ms 
+                                        1.63736 us    1.62686 us    1.66302 us 
+                                        80.2603 ns    35.1796 ns    142.688 ns 
+                                                                               
 
 ===============================================================================
-test cases: 1 | 1 failed
-assertions: 1 | 1 failed
-
-./build/benchmark_mem_route: Interrupt
-
- Performance counter stats for './build/benchmark_mem_route [mult_k][alloc + dealloc]':
-
-         6,778,388      cache-misses:u                                                        
-    10,768,019,018      cycles:u                                                              
-           309,856      minor-faults:u                                                        
-               106      major-faults:u                                                        
-
-       3.093353970 seconds time elapsed
-
-       2.458966000 seconds user
-       0.557363000 seconds sys
+test cases: 1 | 1 passed
+assertions: - none -
 
 
-Filters: [mult_k] [access]
-Randomness seeded to: 2865124767
+ Performance counter stats for './build/benchmark_mem_route [mult_256][alloc + dealloc]':
+
+         1,841,079      cache-misses:u                                                        
+     7,733,210,989      cycles:u                                                              
+           220,316      minor-faults:u                                                        
+                 0      major-faults:u                                                        
+
+       2.154202013 seconds time elapsed
+
+       1.742685000 seconds user
+       0.400908000 seconds sys
+
+
+Filters: [mult_256] [access]
+Randomness seeded to: 444836389
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 benchmark_mem_route is a Catch2 v3.15.1 host application.
@@ -50,16 +48,16 @@ Run with -? for options
 -------------------------------------------------------------------------------
 Small size, access
 -------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:74
+/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:73
 ...............................................................................
 
 benchmark name                       samples       iterations    est run time
                                      mean          low mean      high mean
                                      std dev       low std dev   high std dev
 -------------------------------------------------------------------------------
-Access                                         100             1    22.6864 ms 
-                                         228.83 us    226.231 us    231.681 us 
-                                        13.9291 us    12.7404 us    15.2556 us 
+Access                                         100             9     2.2734 ms 
+                                        2.51144 us    2.47209 us    2.60013 us 
+                                         285.83 ns        126 ns    490.799 ns 
                                                                                
 
 ===============================================================================
@@ -67,21 +65,21 @@ test cases: 1 | 1 passed
 assertions: - none -
 
 
- Performance counter stats for './build/benchmark_mem_route [mult_k][access]':
+ Performance counter stats for './build/benchmark_mem_route [mult_256][access]':
 
-         4,670,755      cache-misses:u                                                        
-    11,601,526,193      cycles:u                                                              
-           271,901      minor-faults:u                                                        
-                 4      major-faults:u                                                        
+         1,669,906      cache-misses:u                                                        
+     8,236,498,093      cycles:u                                                              
+           220,319      minor-faults:u                                                        
+                 0      major-faults:u                                                        
 
-       3.194308005 seconds time elapsed
+       2.271327558 seconds time elapsed
 
-       2.648676000 seconds user
-       0.480346000 seconds sys
+       1.856056000 seconds user
+       0.403730000 seconds sys
 
 
-Filters: [mult_32k] [alloc + dealloc]
-Randomness seeded to: 3578593100
+Filters: [mult_8k] [alloc + dealloc]
+Randomness seeded to: 157196802
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 benchmark_mem_route is a Catch2 v3.15.1 host application.
@@ -90,16 +88,16 @@ Run with -? for options
 -------------------------------------------------------------------------------
 Medium size, alloc + dealloc
 -------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:88
+/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:86
 ...............................................................................
 
 benchmark name                       samples       iterations    est run time
                                      mean          low mean      high mean
                                      std dev       low std dev   high std dev
 -------------------------------------------------------------------------------
-Multiple alloc + dealloc                       100             1    808.626 ms 
-                                        8.16218 ms    8.00267 ms    8.68864 ms 
-                                        1.32804 ms    458.466 us    2.97384 ms 
+Multiple alloc + dealloc                       100             1    18.2375 ms 
+                                        180.368 us    178.358 us    184.446 us 
+                                        14.0249 us    7.45614 us    24.9143 us 
                                                                                
 
 ===============================================================================
@@ -107,21 +105,21 @@ test cases: 1 | 1 passed
 assertions: - none -
 
 
- Performance counter stats for './build/benchmark_mem_route [mult_32k][alloc + dealloc]':
+ Performance counter stats for './build/benchmark_mem_route [mult_8k][alloc + dealloc]':
 
-        10,386,304      cache-misses:u                                                        
-    14,293,582,431      cycles:u                                                              
-           412,697      minor-faults:u                                                        
+         4,514,607      cache-misses:u                                                        
+     7,304,406,084      cycles:u                                                              
+           387,780      minor-faults:u                                                        
                  0      major-faults:u                                                        
 
-       4.054110776 seconds time elapsed
+       2.340465186 seconds time elapsed
 
-       3.248298000 seconds user
-       0.759790000 seconds sys
+       1.665447000 seconds user
+       0.655258000 seconds sys
 
 
-Filters: [mult_32k] [access]
-Randomness seeded to: 3035635802
+Filters: [mult_8k] [access]
+Randomness seeded to: 3957605264
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 benchmark_mem_route is a Catch2 v3.15.1 host application.
@@ -130,34 +128,38 @@ Run with -? for options
 -------------------------------------------------------------------------------
 Medium size, access
 -------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:101
+/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:99
 ...............................................................................
 
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:101: FAILED:
-due to a fatal error condition:
-  SIGINT - Terminal interrupt signal
+benchmark name                       samples       iterations    est run time
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+Access                                         100             1     8.3179 ms 
+                                        79.3077 us    78.8608 us     80.371 us 
+                                         3.3367 us    1.79764 us    6.81034 us 
+                                                                               
 
 ===============================================================================
-test cases: 1 | 1 failed
-assertions: 1 | 1 failed
+test cases: 1 | 1 passed
+assertions: - none -
 
-./build/benchmark_mem_route: Interrupt
 
- Performance counter stats for './build/benchmark_mem_route [mult_32k][access]':
+ Performance counter stats for './build/benchmark_mem_route [mult_8k][access]':
 
-           428,301      cache-misses:u                                                        
-     3,606,085,297      cycles:u                                                              
-           104,299      minor-faults:u                                                        
+         2,214,448      cache-misses:u                                                        
+     8,348,310,283      cycles:u                                                              
+           220,407      minor-faults:u                                                        
                  0      major-faults:u                                                        
 
-       1.036804933 seconds time elapsed
+       2.302457851 seconds time elapsed
 
-       0.807256000 seconds user
-       0.196524000 seconds sys
+       1.899201000 seconds user
+       0.386989000 seconds sys
 
 
 Filters: [mult_128k] [alloc + dealloc]
-Randomness seeded to: 1841549267
+Randomness seeded to: 1111503488
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 benchmark_mem_route is a Catch2 v3.15.1 host application.
@@ -166,320 +168,16 @@ Run with -? for options
 -------------------------------------------------------------------------------
 Big size, alloc + dealloc
 -------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:115
-...............................................................................
-
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:115: FAILED:
-due to a fatal error condition:
-  SIGINT - Terminal interrupt signal
-
-===============================================================================
-test cases: 1 | 1 failed
-assertions: 1 | 1 failed
-
-./build/benchmark_mem_route: Interrupt
-
- Performance counter stats for './build/benchmark_mem_route [mult_128k][alloc + dealloc]':
-
-           199,553      cache-misses:u                                                        
-       845,224,874      cycles:u                                                              
-            26,251      minor-faults:u                                                        
-                 0      major-faults:u                                                        
-
-       0.244642787 seconds time elapsed
-
-       0.190825000 seconds user
-       0.051935000 seconds sys
-
-
-Filters: [mult_128k] [access]
-Randomness seeded to: 2563590067
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-benchmark_mem_route is a Catch2 v3.15.1 host application.
-Run with -? for options
-
--------------------------------------------------------------------------------
-Big size, access
--------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:129
-...............................................................................
-
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:129: FAILED:
-due to a fatal error condition:
-  SIGINT - Terminal interrupt signal
-
-===============================================================================
-test cases: 1 | 1 failed
-assertions: 1 | 1 failed
-
-./build/benchmark_mem_route: Interrupt
-
- Performance counter stats for './build/benchmark_mem_route [mult_128k][access]':
-
-           354,092      cache-misses:u                                                        
-       805,913,171      cycles:u                                                              
-            26,216      minor-faults:u                                                        
-                 0      major-faults:u                                                        
-
-       0.237761891 seconds time elapsed
-
-       0.185485000 seconds user
-       0.047831000 seconds sys
-
-
-Filters: [mult_1m] [alloc + dealloc]
-Randomness seeded to: 3049191167
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-benchmark_mem_route is a Catch2 v3.15.1 host application.
-Run with -? for options
-
--------------------------------------------------------------------------------
-Huge size, alloc + dealloc
--------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:143
-...............................................................................
-
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:143: FAILED:
-due to a fatal error condition:
-  SIGINT - Terminal interrupt signal
-
-===============================================================================
-test cases: 1 | 1 failed
-assertions: 1 | 1 failed
-
-./build/benchmark_mem_route: Interrupt
-
- Performance counter stats for './build/benchmark_mem_route [mult_1m][alloc + dealloc]':
-
-           198,106      cache-misses:u                                                        
-       646,879,025      cycles:u                                                              
-            21,190      minor-faults:u                                                        
-                 0      major-faults:u                                                        
-
-       0.196180620 seconds time elapsed
-
-       0.158884000 seconds user
-       0.032342000 seconds sys
-
-
-Filters: [mult_1m] [access]
-Randomness seeded to: 1941023550
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-benchmark_mem_route is a Catch2 v3.15.1 host application.
-Run with -? for options
-
--------------------------------------------------------------------------------
-Huge size, access
--------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:157
-...............................................................................
-
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:157: FAILED:
-due to a fatal error condition:
-  SIGINT - Terminal interrupt signal
-
-===============================================================================
-test cases: 1 | 1 failed
-assertions: 1 | 1 failed
-
-./build/benchmark_mem_route: Interrupt
-
- Performance counter stats for './build/benchmark_mem_route [mult_1m][access]':
-
-           815,266      cache-misses:u                                                        
-       465,175,642      cycles:u                                                              
-            21,612      minor-faults:u                                                        
-                 0      major-faults:u                                                        
-
-       0.156878511 seconds time elapsed
-
-       0.107206000 seconds user
-       0.043781000 seconds sys
-
-
-Filters: [mult_k] [alloc + dealloc]
-Randomness seeded to: 1194730305
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-benchmark_mem_route is a Catch2 v3.15.1 host application.
-Run with -? for options
-
--------------------------------------------------------------------------------
-Small size, alloc + dealloc
--------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:61
+/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:113
 ...............................................................................
 
 benchmark name                       samples       iterations    est run time
                                      mean          low mean      high mean
                                      std dev       low std dev   high std dev
 -------------------------------------------------------------------------------
-Multiple alloc + dealloc                       100             1    78.2805 ms 
-                                        517.411 us    509.981 us    529.935 us 
-                                        48.2352 us    33.3568 us     82.145 us 
-                                                                               
-
-===============================================================================
-test cases: 1 | 1 passed
-assertions: - none -
-
-
- Performance counter stats for './build/benchmark_mem_route [mult_k][alloc + dealloc]':
-
-         4,878,216      cache-misses:u                                                        
-     6,423,222,933      cycles:u                                                              
-           166,139      minor-faults:u                                                        
-                 0      major-faults:u                                                        
-
-       3.599585498 seconds time elapsed
-
-       2.993000000 seconds user
-       0.566759000 seconds sys
-
-
-Filters: [mult_k] [access]
-Randomness seeded to: 1856002798
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-benchmark_mem_route is a Catch2 v3.15.1 host application.
-Run with -? for options
-
--------------------------------------------------------------------------------
-Small size, access
--------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:74
-...............................................................................
-
-benchmark name                       samples       iterations    est run time
-                                     mean          low mean      high mean
-                                     std dev       low std dev   high std dev
--------------------------------------------------------------------------------
-Access                                         100             1    71.6358 ms 
-                                        708.452 us    706.322 us     714.38 us 
-                                        16.7888 us    7.28444 us    36.1089 us 
-                                                                               
-
-===============================================================================
-test cases: 1 | 1 passed
-assertions: - none -
-
-
- Performance counter stats for './build/benchmark_mem_route [mult_k][access]':
-
-         3,001,679      cache-misses:u                                                        
-     6,340,888,767      cycles:u                                                              
-           140,626      minor-faults:u                                                        
-                 0      major-faults:u                                                        
-
-       3.798141380 seconds time elapsed
-
-       3.257795000 seconds user
-       0.505248000 seconds sys
-
-
-Filters: [mult_32k] [alloc + dealloc]
-Randomness seeded to: 1524169664
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-benchmark_mem_route is a Catch2 v3.15.1 host application.
-Run with -? for options
-
--------------------------------------------------------------------------------
-Medium size, alloc + dealloc
--------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:88
-...............................................................................
-
-benchmark name                       samples       iterations    est run time
-                                     mean          low mean      high mean
-                                     std dev       low std dev   high std dev
--------------------------------------------------------------------------------
-Multiple alloc + dealloc                       100             1    792.548 ms 
-                                        7.81272 ms    7.68605 ms    8.07504 ms 
-                                        895.425 us    458.275 us    1.49084 ms 
-                                                                               
-
-===============================================================================
-test cases: 1 | 1 passed
-assertions: - none -
-
-
- Performance counter stats for './build/benchmark_mem_route [mult_32k][alloc + dealloc]':
-
-         8,735,645      cache-misses:u                                                        
-     9,826,758,733      cycles:u                                                              
-           281,427      minor-faults:u                                                        
-                 0      major-faults:u                                                        
-
-       3.441578328 seconds time elapsed
-
-       2.781817000 seconds user
-       0.633210000 seconds sys
-
-
-Filters: [mult_32k] [access]
-Randomness seeded to: 2278559645
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-benchmark_mem_route is a Catch2 v3.15.1 host application.
-Run with -? for options
-
--------------------------------------------------------------------------------
-Medium size, access
--------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:101
-...............................................................................
-
-benchmark name                       samples       iterations    est run time
-                                     mean          low mean      high mean
-                                     std dev       low std dev   high std dev
--------------------------------------------------------------------------------
-Access                                         100             1    703.885 ms 
-                                        7.01194 ms    6.99902 ms    7.04478 ms 
-                                        98.0222 us    50.3423 us    203.905 us 
-                                                                               
-
-===============================================================================
-test cases: 1 | 1 passed
-assertions: - none -
-
-
- Performance counter stats for './build/benchmark_mem_route [mult_32k][access]':
-
-         8,050,572      cache-misses:u                                                        
-    14,838,884,657      cycles:u                                                              
-           273,040      minor-faults:u                                                        
-                 0      major-faults:u                                                        
-
-       3.849083777 seconds time elapsed
-
-       3.370979000 seconds user
-       0.456191000 seconds sys
-
-
-Filters: [mult_128k] [alloc + dealloc]
-Randomness seeded to: 1115263763
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-benchmark_mem_route is a Catch2 v3.15.1 host application.
-Run with -? for options
-
--------------------------------------------------------------------------------
-Big size, alloc + dealloc
--------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:115
-...............................................................................
-
-benchmark name                       samples       iterations    est run time
-                                     mean          low mean      high mean
-                                     std dev       low std dev   high std dev
--------------------------------------------------------------------------------
-Multiple alloc + dealloc                       100             1     3.10297 s 
-                                         31.867 ms    31.5628 ms    32.3236 ms 
-                                        1.87565 ms    1.40403 ms    2.95725 ms 
+Multiple alloc + dealloc                       100             1    350.891 ms 
+                                        3.28795 ms    3.25065 ms    3.33073 ms 
+                                        203.669 us    178.326 us    239.174 us 
                                                                                
 
 ===============================================================================
@@ -489,19 +187,19 @@ assertions: - none -
 
  Performance counter stats for './build/benchmark_mem_route [mult_128k][alloc + dealloc]':
 
-        23,167,537      cache-misses:u                                                        
-    21,888,094,113      cycles:u                                                              
-           739,758      minor-faults:u                                                        
+         4,045,802      cache-misses:u                                                        
+     7,554,735,769      cycles:u                                                              
+           425,591      minor-faults:u                                                        
                  0      major-faults:u                                                        
 
-       6.326294448 seconds time elapsed
+       2.492352986 seconds time elapsed
 
-       4.957021000 seconds user
-       1.318817000 seconds sys
+       1.721843000 seconds user
+       0.757195000 seconds sys
 
 
 Filters: [mult_128k] [access]
-Randomness seeded to: 384418339
+Randomness seeded to: 3726650642
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 benchmark_mem_route is a Catch2 v3.15.1 host application.
@@ -510,16 +208,16 @@ Run with -? for options
 -------------------------------------------------------------------------------
 Big size, access
 -------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:129
+/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:127
 ...............................................................................
 
 benchmark name                       samples       iterations    est run time
                                      mean          low mean      high mean
                                      std dev       low std dev   high std dev
 -------------------------------------------------------------------------------
-Access                                         100             1     2.83206 s 
-                                        28.2479 ms    28.2128 ms    28.2928 ms 
-                                        201.532 us    164.568 us    255.512 us 
+Access                                         100             1    192.891 ms 
+                                        1.89159 ms    1.88677 ms    1.89808 ms 
+                                        28.3664 us    22.4441 us    35.5209 us 
                                                                                
 
 ===============================================================================
@@ -529,19 +227,19 @@ assertions: - none -
 
  Performance counter stats for './build/benchmark_mem_route [mult_128k][access]':
 
-        18,791,789      cache-misses:u                                                        
-    24,219,362,828      cycles:u                                                              
-           276,432      minor-faults:u                                                        
+         1,695,538      cache-misses:u                                                        
+     8,736,471,494      cycles:u                                                              
+           221,150      minor-faults:u                                                        
                  0      major-faults:u                                                        
 
-       5.979075449 seconds time elapsed
+       2.386655781 seconds time elapsed
 
-       5.466627000 seconds user
-       0.482673000 seconds sys
+       1.980729000 seconds user
+       0.391009000 seconds sys
 
 
-Filters: [mult_1m] [alloc + dealloc]
-Randomness seeded to: 1027098509
+Filters: [mult_8m] [alloc + dealloc]
+Randomness seeded to: 1276298697
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 benchmark_mem_route is a Catch2 v3.15.1 host application.
@@ -550,16 +248,16 @@ Run with -? for options
 -------------------------------------------------------------------------------
 Huge size, alloc + dealloc
 -------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:143
+/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:141
 ...............................................................................
 
 benchmark name                       samples       iterations    est run time
                                      mean          low mean      high mean
                                      std dev       low std dev   high std dev
 -------------------------------------------------------------------------------
-Multiple alloc + dealloc                       100             1     24.8328 s 
-                                        255.212 ms    254.721 ms    255.759 ms 
-                                        2.65212 ms    2.25186 ms    3.17216 ms 
+Multiple alloc + dealloc                       100             1     50.9942 s 
+                                        529.309 ms    523.512 ms    535.663 ms 
+                                        30.9347 ms    28.2116 ms    35.0638 ms 
                                                                                
 
 ===============================================================================
@@ -567,21 +265,21 @@ test cases: 1 | 1 passed
 assertions: - none -
 
 
- Performance counter stats for './build/benchmark_mem_route [mult_1m][alloc + dealloc]':
+ Performance counter stats for './build/benchmark_mem_route [mult_8m][alloc + dealloc]':
 
-       134,723,059      cache-misses:u                                                        
-    95,001,364,214      cycles:u                                                              
-         3,909,825      minor-faults:u                                                        
+       108,693,156      cache-misses:u                                                        
+    58,183,310,899      cycles:u                                                              
+        20,912,204      minor-faults:u                                                        
                  0      major-faults:u                                                        
 
-      28.736838437 seconds time elapsed
+      55.385560418 seconds time elapsed
 
-      21.224571000 seconds user
-       7.344967000 seconds sys
+      12.653477000 seconds user
+      42.088563000 seconds sys
 
 
-Filters: [mult_1m] [access]
-Randomness seeded to: 964214463
+Filters: [mult_8m] [access]
+Randomness seeded to: 2515417886
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 benchmark_mem_route is a Catch2 v3.15.1 host application.
@@ -590,16 +288,16 @@ Run with -? for options
 -------------------------------------------------------------------------------
 Huge size, access
 -------------------------------------------------------------------------------
-/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:157
+/home/ElectroX79/Atomix-sandbox/atomix-sanbox-benchmark/Atomix_sandbox/test/benchmark/benchmark_mem_route.cpp:155
 ...............................................................................
 
 benchmark name                       samples       iterations    est run time
                                      mean          low mean      high mean
                                      std dev       low std dev   high std dev
 -------------------------------------------------------------------------------
-Access                                         100             1     22.5847 s 
-                                        228.828 ms    228.044 ms    229.686 ms 
-                                         4.1743 ms    3.73985 ms    4.65234 ms 
+Access                                         100             1     12.4305 s 
+                                         123.86 ms    123.575 ms    124.274 ms 
+                                        1.73419 ms    1.31813 ms    2.26593 ms 
                                                                                
 
 ===============================================================================
@@ -607,16 +305,16 @@ test cases: 1 | 1 passed
 assertions: - none -
 
 
- Performance counter stats for './build/benchmark_mem_route [mult_1m][access]':
+ Performance counter stats for './build/benchmark_mem_route [mult_8m][access]':
 
-       126,312,318      cache-misses:u                                                        
-   112,596,812,517      cycles:u                                                              
-           308,121      minor-faults:u                                                        
+        12,660,853      cache-misses:u                                                        
+    61,624,348,691      cycles:u                                                              
+           429,679      minor-faults:u                                                        
                  0      major-faults:u                                                        
 
-      26.326019475 seconds time elapsed
+      15.095632194 seconds time elapsed
 
-      25.446582000 seconds user
-       0.585449000 seconds sys
+      14.117354000 seconds user
+       0.892511000 seconds sys
 
 
