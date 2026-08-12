@@ -20,11 +20,7 @@ theme:
 
 nav:
   - Home: index.md
-
-  - Getting Started:
-    - Introduction: getting-started/introduction.md
-    - Installation: getting-started/installation.md
-    - Building: getting-started/building.md
+  - Getting Started: getting-started/introduction.md
 
   - Architecture:
     - Introduction: architecture/introduction.md
@@ -50,8 +46,7 @@ nav:
 
   - Benchmarks:
     - Introduction: benchmarks/introduction.md
-    - MMap vs Aligned alloc: benchmarks/vmem_vs_align_alloc.md
-    - Methodology: benchmarks/methodology.md
+    - MMap vs Aligned alloc: benchmarks/memory_allocation_performance.md
 
   - Future features:
     - Introduction: future_features/introduction.md
