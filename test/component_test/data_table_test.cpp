@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "../external/catch2/catch_amalgamated.hpp"
-#include "include/data_table_tester.hpp"
+#include "../include/data_table_tester.hpp"
 #include "data_table_printer.hpp"
 #include "data_table.hpp"
 #include "data_type.hpp"
