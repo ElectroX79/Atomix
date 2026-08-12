@@ -9,6 +9,6 @@ For implemented architecture, the following sections are:
 - [Memory management](mem_management.md): explains the memory management subsystem.
 - [Data table](data_table.md): how the columnar relational data table is implemented.
 
-But if you want to learn more about future implementations, go to [future features](fu).
+But if you want to learn more about future implementations, go to [future features](../future_features/introduction.md).
 
 
