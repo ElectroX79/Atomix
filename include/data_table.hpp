@@ -158,6 +158,7 @@ namespace atomix {
                 size_t buffer_index, remainder;
                 get_buffer_pos<DT>(col_index, offset, buffer_index, remainder);
                 return *reinterpret_cast<T*>(columns_[col_index].buffers[buffer_index]->get_begin() + remainder);
+                //TODO: study using std::start_lifetime_as<T*> if it cannot assure lifetime
             }
             else{
                //TODO: do when implemented list support
@@ -167,7 +168,7 @@ namespace atomix {
 
         }
 
-
+        //TODO: implement std::forward for methods extract(), append() and erase
         /**
          * @brief Extract a copy of partial tabular data defined by an interval
          * * @param begin The first index of the interval of columns to extract
