@@ -160,7 +160,7 @@ namespace atomix {
                 return *reinterpret_cast<T*>(columns_[col_index].buffers[buffer_index]->get_begin() + remainder);
             }
             else{
-               //TO-DO: do when implemented list support
+               //TODO: do when implemented list support
                 throw std::logic_error("String support not implemented yet");
             }
 

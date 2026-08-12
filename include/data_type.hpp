@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <cstdint>
 #include <iostream>
+#include <cstdlib>
 
 namespace atomix {
     enum class DataType : uint8_t{
@@ -99,7 +100,7 @@ namespace atomix::data_type_utils {
         std::abort();
 
     }
-
+    // TODO: use byte_size inside of byte_size_fixed
     constexpr size_t byte_size_fixed(const DataType dtype){
         switch (dtype)
         {
