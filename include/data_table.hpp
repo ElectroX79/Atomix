@@ -26,7 +26,6 @@ namespace atomix {
         struct ListMetadata{
             std::vector<uint32_t> offsets;
             uint32_t last_used_byte;
-            DataType type; //CANNOT BE LIST, it doesn't accept recursive types yet.
         };
 
         struct Column {
@@ -36,19 +35,24 @@ namespace atomix {
             size_t n_elements;
             size_t chunk_size; // 0 if it's not chunked (if chunk_size == 0 -> vector<shared_ptr<buffer>>.size() <= 1)
             DataType type = DataType::Undefined;
+            DataType variable_type; //CANNOT BE LIST. Also, if type != DataType::List, then variable_type == DataType::Undefined
 
             Column(std::string&& name1,
                 std::vector<std::shared_ptr<atomix::mem::Buffer>>&& buffer1,
                 std::vector<ListMetadata>&& list_metadata1,
                 const size_t n_elements1,
                 const size_t chunk_size1,
-                const DataType type1):
+                const DataType type1,
+                const DataType variable_type1
+                ):
             name(std::move(name1)),
             buffers(std::move(buffer1)),
             list_metadata(std::move(list_metadata1)),
             n_elements(n_elements1),
             chunk_size(chunk_size1),
-            type(type1){}
+            type(type1),
+            variable_type(variable_type1)
+            {}
         };
 
 

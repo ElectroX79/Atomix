@@ -11,7 +11,7 @@ namespace atomix::mem{
     class Buffer;
     namespace mem_route {
         // Future change: custom allocator, see documentation
-        std::vector<std::shared_ptr<Buffer>> allocate_chunked(const size_t size, const size_t chunk_size);
+
         std::vector<std::shared_ptr<Buffer>> allocate(const size_t size, size_t& chunk_size, const size_t alignment = 64);
         void deallocate(uint8_t* ptr, AllocationType alloc_t);
 
