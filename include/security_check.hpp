@@ -8,6 +8,7 @@
 
 
 namespace atomix::bounds{
+     //TODO (maybe also to the entire codebase): consider use std::contract (c++26) for precondition and postcondition instead of abort()
 
      inline void check_index_interval(const size_t begin, const size_t end, const size_t container_size) {
           //always begin >= 0, because begin is size_t

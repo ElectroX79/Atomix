@@ -1,5 +1,4 @@
 # Welcome to Atomix
-
 ## What is Atomix?
 
 Atomix is an experimental analytical data engine. Its goal is to achieve high data throughput and efficient dataset processing,
