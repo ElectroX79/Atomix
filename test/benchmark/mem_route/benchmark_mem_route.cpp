@@ -13,16 +13,14 @@
 
 namespace {
     atomix::DataTable make_three_column_table(const size_t multiplier) {
+
         const std::vector<int32_t> ids{1, 2, 3};
         const std::vector<double> values{1.5, 2.5, 3.5};
-        const std::vector<uint8_t> flags{1, 0, 1};
+        const std::vector<char> flags{'A', 'B', 'C'};
 
         std::vector<int32_t> ids2{};
         std::vector<double> values2{};
-        std::vector<uint8_t> flags2{};
-
-
-
+        std::vector<char> flags2{};
 
         for (size_t i = 0; i < multiplier; ++i) {
             ids2.insert(ids2.end(), ids.begin(), ids.end());
@@ -31,10 +29,9 @@ namespace {
         }
 
         atomix::DataTable table;
-        atomix::DataTableTester::artificial_append(table, ids2, atomix::DataType::Int32, "ids");
-        atomix::DataTableTester::artificial_append(table, values2, atomix::DataType::Float64, "values");
-        atomix::DataTableTester::artificial_append(table, flags2, atomix::DataType::Bool, "flags");
-
+        atomix::DataTableTester::artificial_append_fixed<atomix::DataType::Int32>(table, ids2,"ids");
+        atomix::DataTableTester::artificial_append_fixed<atomix::DataType::Float64>(table, values2, "values");
+        atomix::DataTableTester::artificial_append_fixed<atomix::DataType::Char>(table, flags2, "flags");
         return table;
     }
 
@@ -51,7 +48,7 @@ namespace {
         }
 
         for (size_t x = 0; x < n_elements_column; ++x) {
-            auto temp = table.at<atomix::DataType::Bool>(2,x);
+            auto temp = table.at<atomix::DataType::Char>(2,x);
             Catch::Benchmark::deoptimize_value(temp);
         }
     }
