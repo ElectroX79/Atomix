@@ -45,7 +45,6 @@ nav:
       - ADR-0003: adr/adr-0003-removal_vmem_chunk.md
 
   - Benchmarks:
-    - Introduction: benchmarks/introduction.md
     - Memory allocation strategies: benchmarks/memory_allocation_performance.md
 
   - Future features:
