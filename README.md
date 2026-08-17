@@ -27,7 +27,10 @@ The main goals of this project are:
 ---
 ## Documentation
 
-To learn more about the project, see the [documentation](docs/index.md)
+To learn more about the project, see the [documentation](https://electrox79.github.io/Atomix/)
+
+If the web does not work, you can directly see the documentation [there](docs/index.md)
+
 
 ---
 
