@@ -127,7 +127,7 @@ namespace atomix {
 
             size_t acc2 = 0;
             for (size_t i = 0; i < aux_offsets.size(); ++i) {
-                memcpy(buffers[i]->get_begin(), reinterpret_cast<uint8_t*>(sp.begin()) + acc2, aux_offsets[i].last_used_byte );
+                memcpy(buffers[i]->get_begin(), reinterpret_cast<uint8_t*>(sp.data()) + acc2, aux_offsets[i].last_used_byte );
                 acc2 += aux_offsets[i].last_used_byte;
             }
             assert(acc2 == sp.size_bytes());

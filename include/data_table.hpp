@@ -146,6 +146,16 @@ namespace atomix {
             return columns_[index].n_elements;
         }
 
+        /**
+        * @brief Accesses an element by column index and logical offset.
+        *
+        * @tparam DT The column data type.
+        * @param col_index The column index.
+        * @param offset The logical element index.
+        * @return The value at the specified position.
+        *
+        * @note `DataType::List` is not supported. Use `at_list()` instead.
+        */
         template<DataType DT>
         [[nodiscard]] type_of_t<DT> at(const size_t col_index,const size_t offset)const{
             using T = type_of_t<DT>;
@@ -158,22 +168,36 @@ namespace atomix {
                 std::abort();
             }
 
-            if constexpr (DT != DataType::List){
-                size_t buffer_index, remainder;
-                get_buffer_pos<DT>(col_index, offset, buffer_index, remainder);
-                return *reinterpret_cast<T*>(columns_[col_index].buffers[buffer_index]->get_begin() + remainder);
-                //TODO: study using std::start_lifetime_as<T*> if it cannot assure lifetime
-            }
-            else{
-               //TODO: do when implemented list support
-                //Notice that the method at() with DataType::List could have O(N) cost without extra infrastructure,
-                //that's expected for now.
-                //Note: For sequential massive access is still O(1), depending of the scope.
-                throw std::logic_error("String support not implemented yet for at()");
+            if constexpr (DT == DataType::List) {
+                std::cerr << "DataTable do not accept DataType::List, use at_list instead " << "\n";
+                std::abort();
             }
 
-
+            size_t buffer_index, remainder;
+            get_buffer_pos<DT>(col_index, offset, buffer_index, remainder);
+            return *reinterpret_cast<T*>(columns_[col_index].buffers[buffer_index]->get_begin() + remainder);
+            //TODO: study using std::start_lifetime_as<T*> if it cannot assure lifetime
         }
+
+        /**
+        * @brief Accesses a list by column index and logical offset.
+        *
+        * @tparam DT The data type stored by the list.
+        * @param col_index The column index.
+        * @param offset The logical list index.
+        * @return A span containing the list elements.
+        *
+        * @note The column must have `DataType::List` with `DT` as its variable type.
+        */
+        template<DataType DT>
+       [[nodiscard]] std::span<type_of_t<DT>> at_list(const size_t col_index,const size_t offset)const {
+            //TODO: do when implemented list support
+            //Notice that the method at() with DataType::List could have O(N), where N is numbers of chunks cost without extra infrastructure,
+            //that's expected for now.
+            //Note: For sequential massive access is still O(1), depending of the scope.
+            throw std::logic_error("List support not implemented yet for at()");
+        }
+
 
         //TODO: implement std::forward for methods extract(), append() and erase
         /**

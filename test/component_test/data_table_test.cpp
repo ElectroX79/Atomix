@@ -4,6 +4,7 @@
 #include <string_view>
 #include <utility>
 #include <vector>
+#include <ranges>
 
 #include "../external/catch2/catch_amalgamated.hpp"
 #include "../include/data_table_tester.hpp"
@@ -42,6 +43,7 @@ namespace {
 }
 
 // TODO: add more specifics TEST_CASE for DataType::List
+// TODO: add some tester for the printers
 
 TEST_CASE("DataTable: empty table has no columns", "[atomix::DataTable][empty]") {
     const atomix::DataTable table;
@@ -115,7 +117,23 @@ TEST_CASE("DataTable: DataTabla::at() integrity", "[atomix::DataTable][default]"
     CHECK(td.at<atomix::DataType::Char>(2, 1) == 'B');
     CHECK(td.at<atomix::DataType::Char>(2, 2) == 'C');
 
-    // TODO: An example of where lacks a DataType::List check (it needs DataTable::at() support variable size elements first)
+
+    /*
+    std::vector<char> name1{'J', 'o', 'h', 'n'};
+    const std::span sp1{name1};
+
+    std::vector<char> name2{'P', 'o', 'r', 'k'};
+    const std::span sp2{name2};
+
+    std::vector<char> name3{'C', 'a', 'l', 'l'};
+    const std::span sp3{name3};
+
+
+    CHECK(std::ranges::equal(td.at_list<atomix::DataType::Char>(2, 0), sp1));
+    CHECK(std::ranges::equal(td.at_list<atomix::DataType::Char>(2, 1), sp2));
+    CHECK(std::ranges::equal(td.at_list<atomix::DataType::Char>(2, 2), sp3));
+    */
+    //TODO: Decomment when DataTable::at_list is ready
 }
 
 
