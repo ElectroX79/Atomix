@@ -13,6 +13,9 @@ namespace atomix{
                 std::cout << dt.column_name(i) << ": ";
                 std::cout << "n_elements " << dt.column_size(i) ;
                 std::cout << ", datatype " <<data_type_utils::data_type_to_string(dt.column_datatype(i));
+                if (dt.column_datatype(i) == DataType::List) {
+                    std::cout << ", list subtype " << data_type_utils::data_type_to_string(dt.columns_[i].variable_type);
+                }
                 std::cout << std::endl;
             }
         }
@@ -41,8 +44,7 @@ namespace atomix{
                                 break;
 
                             default:
-                                std::cerr << "Unsupported data type to print" << std::endl;
-                                abort();
+                                std::cerr << "List (unsupported)" << std::endl;
                         }
                     }
                 }
