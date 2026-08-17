@@ -1,8 +1,6 @@
-# Atomix Engine
+# Atomix 
 
-Atomix Engine is a C++20 data processing engine designed as the computational core for high-performance applications.
-
-Its first target application is a quantum computer simulator, but the architecture is intended to be reusable for other scientific computing and data-intensive workloads.
+Atomix Engine is a C++26 data processing engine designed as the computational core for high-performance applications.
 
 > **Project Status:** Early development. The architecture is actively evolving.
 
@@ -19,84 +17,24 @@ The main goals of this project are:
 
 ---
 
-## Architecture
-
-Current high-level pipeline:
-
-```
-Input Data
-     │
-     ▼
- Reader
-     │
-     ▼
- Parser
-     │
-     ▼
- TabularData
-     │
-     ▼
- Engine
-```
-
-The internal architecture is intentionally modular so that individual components can evolve independently.
-
----
-
-## Current Components
-
-| Component | Description |
-|-----------|-------------|
-| `arena.hpp` | Arena allocator and memory management |
-| `reader.hpp` | Input loading utilities |
-| `parser.hpp` | Parsing infrastructure |
-| `tabular_data.hpp` | Column-oriented table representation |
-| `column.hpp` | Column abstraction |
-| `engine.hpp` | Public engine interface |
-| `security_check.hpp` | Input validation utilities |
-
----
-
 ## Technologies
 
-- C++20
+- C++26
 - CMake
 - Catch2
-- vcpkg
+
 
 ---
+## Documentation
 
-## Building
-
-```bash
-git clone <repository>
-
-cmake -B build
-
-cmake --build build
-```
-
----
-
-## Roadmap
-
-- [x] Initial project structure
-- [x] Reader implementation
-- [x] Tabular data abstraction
-- [ ] Initial parser
-- [ ] Query execution layer
-- [ ] Performance profiling
-- [ ] SIMD optimizations
-- [ ] Parallel execution
-- [ ] Public C API
+To learn more about the project, see the [documentation](docs/index.md)
 
 ---
 
 ## Philosophy
 
-This project is developed by Computer Engineering students as a long-term learning initiative.
-
-Rather than maximizing features as quickly as possible, the focus is on understanding how high-performance systems are designed and implemented—from memory management and cache locality to modular software architecture.
+Rather than maximizing features as quickly as possible, the focus is on understanding how high-performance 
+systems are designed and implemented.
 
 ---
 

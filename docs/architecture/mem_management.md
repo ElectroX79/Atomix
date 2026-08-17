@@ -30,7 +30,7 @@ the allocation size, which will determine if the allocation needs to be chunked.
 The current implementation is intentionally simple and serves as the foundation for future memory management improvements. More specialized strategies will be introduced as the engine evolves.
 
 ---
-To learn more about the memory management implementation, you can consult [Memory route]()
+To learn more about the memory management implementation, you can consult [Memory route](../internals/mem/mem_route.md)
 
 
 
