@@ -11,7 +11,6 @@ Before making your first contribution, make sure you can build Atomix and run it
 Use the following pages depending on what you need:
 
 * [Getting Started](getting_started.md) — Build Atomix and run the tests.
-* [What to Do](what_to_do.md) — Find something to work on.
 * [Communication](communication.md) — Ask questions, propose ideas and discuss problems.
 * [Development Workflow](development_workflow.md) — Learn how changes are developed and reviewed.
 * [Benchmarks](benchmark.md) — Learn how to create and run benchmarks.

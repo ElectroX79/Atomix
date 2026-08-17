@@ -36,8 +36,8 @@ nav:
     - Memory:
       - Buffer: internals/mem/buffer.md
       - Aligned allocator: internals/mem/aligned_allocator.md
-      - Mem route: internals/mem/mem_route.md
       - Virtual memory: internals/mem/vmem.md
+      - Mem route: internals/mem/mem_route.md
 
   - Architecture Decision Records:
       - ADR-0001: adr/adr-0001-shared_ownership_buffer.md
@@ -46,17 +46,19 @@ nav:
 
   - Benchmarks:
     - Introduction: benchmarks/introduction.md
-    - MMap vs Aligned alloc: benchmarks/memory_allocation_performance.md
+    - Memory allocation strategies: benchmarks/memory_allocation_performance.md
 
   - Future features:
     - Introduction: future_features/introduction.md
-    - Potential features or changes:
-      - Basic operations: future_features/potential_features_changes/basic_data_table_ops.md
-      - Custom allocator: future_features/potential_features_change/custom_allocator.md
-      - IO: future_features/potential_features_change/io.md
     - Proposals:
-      - Concurrency: future_features/proposals/concurrency.md
+      - Custom allocator: future_features/proposals/custom_allocator.md
+      - IO: future_features/proposals/io.md
+      - Parallelism: future_features/proposals/parallelism.md
 
   - Contributing:
     - Introduction: contributing/introduction.md
-    - What to do: contributing/what_to_do.md
+    - Project structure: contributing/project_structure.md
+    - Communication: contributing/communication.md
+    - Development workflow: contributing/development_workflow.md
+    - ADR: contributing/arquitecture_adr.md
+    - Benchmarks: contributing/benchmark.md

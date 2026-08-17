@@ -16,9 +16,9 @@ Create a new branch for your change.
 
 Use a clear name, for example:
 
-* `feature/data-table-extract`
-* `fix/buffer-bounds`
-* `refactor/mem-route`
+* `feature-data_table_extract`
+* `fix-buffer_bounds`
+* `refactor-mem_route`
 
 Do not work directly on `main`.
 
