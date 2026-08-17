@@ -124,6 +124,14 @@ namespace atomix {
             const size_t total_size = (aux_offsets.size() - 1) * chunk_size_aux + acc;
 
             std::vector<std::shared_ptr<mem::Buffer>> buffers = mem::mem_route::allocate(total_size, chunk_size, 64);
+
+            size_t acc2 = 0;
+            for (size_t i = 0; i < aux_offsets.size(); ++i) {
+                memcpy(buffers[i]->get_begin(), reinterpret_cast<uint8_t*>(sp.begin()) + acc2, aux_offsets[i].last_used_byte );
+                acc2 += aux_offsets[i].last_used_byte;
+            }
+            assert(acc2 == sp.size_bytes());
+
             const DataTable::Column column( std::move(name),
                                             std::move(buffers),
                                             std::move(aux_offsets),

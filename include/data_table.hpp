@@ -166,7 +166,10 @@ namespace atomix {
             }
             else{
                //TODO: do when implemented list support
-                throw std::logic_error("String support not implemented yet");
+                //Notice that the method at() with DataType::List could have O(N) cost without extra infrastructure,
+                //that's expected for now.
+                //Note: For sequential massive access is still O(1), depending of the scope.
+                throw std::logic_error("String support not implemented yet for at()");
             }
 
 
