@@ -10,6 +10,7 @@ Atomix/
 ├── test/               # Tests
     ├── benchmark/      # Benchmarking
     ├── component_test  # Integrity tests
+├── scripts/            # Scripts
 ├── docs/               # Documentation
 ```
 

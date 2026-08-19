@@ -20,7 +20,7 @@ Use a clear name, for example:
 * `fix-buffer_bounds`
 * `refactor-mem_route`
 
-Do not work directly on `main`.
+Do not work directly on `main`, instead create a pull request targeting `develop`.
 
 ## 3. Implement and test
 Make your changes and add or update tests when needed, also run the tests before opening a pull request.
@@ -47,6 +47,9 @@ Explain:
 
 Other contributors will review the pull request, sometimes they will suggest changes or ask questions.
 Discuss them openly and make the necessary changes.
+
+**Note**: Pull requests targeting `develop` must use the merge commit method. Pull requests 
+from `develop` to main may use rebase (or fast-forward) to keep both branches aligned.
 
 
 ## General rule
