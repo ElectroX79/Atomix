@@ -3,18 +3,18 @@ set -e
 
 cmake -B build
 cmake --build build --target mem_route_benchmark
-
-perf_flags="cache-misses,cycles,minor-faults,major-faults"
+#GitHub workflow do not allow to change the perf_event_paranoid
+#perf_flags="cache-misses,cycles,minor-faults,major-faults"
 executable_route="./build/mem_route_benchmark"
 # file_name1="benchmark_result_perf.txt"
 # file_name2="benchmark_result_resources.txt"
 
-run_perf(){
-    local tag="$1"
-
-    perf stat -e "$perf_flags" \
-        "$executable_route" "$tag"
-}
+#run_perf(){
+#    local tag="$1"
+#
+#   perf stat -e "$perf_flags" \
+#        "$executable_route" "$tag"
+#}
 
 run_resources(){
     local tag="$1"
@@ -39,9 +39,10 @@ tags=(
 #: > "$file_name1"
 #: > "$file_name2"
 
-for tag in "${tags[@]}"; do
-    run_perf "$tag"
-done
+#GitHub workflow do not allow to change the perf_event_paranoid
+#for tag in "${tags[@]}"; do
+#    run_perf "$tag"
+#done
 
 
 for tag in "${tags[@]}"; do
