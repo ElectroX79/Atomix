@@ -1,6 +1,6 @@
 # Atomix 
 
-Atomix Engine is a C++26 data processing engine designed as the computational core for high-performance applications.
+Atomix Engine is a C++23 data processing engine designed as the computational core for high-performance applications.
 
 > **Project Status:** Early development. The architecture is actively evolving.
 
@@ -19,7 +19,7 @@ The main goals of this project are:
 
 ## Technologies
 
-- C++26
+- C++23
 - CMake
 - Catch2
 

@@ -8,7 +8,7 @@ Before building Atomix, make sure you have:
 
 * Git
 * CMake
-* A C++ compiler with C++26 support
+* A C++ compiler with C++23 support
 
 Atomix is currently mainly developed and tested on Linux.
 
