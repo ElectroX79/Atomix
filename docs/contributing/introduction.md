@@ -10,11 +10,12 @@ Before making your first contribution, make sure you can build Atomix and run it
 
 Use the following pages depending on what you need:
 
-* [Getting Started](getting_started.md) — Build Atomix and run the tests.
-* [Communication](communication.md) — Ask questions, propose ideas and discuss problems.
-* [Development Workflow](development_workflow.md) — Learn how changes are developed and reviewed.
-* [Benchmarks](benchmark.md) — Learn how to create and run benchmarks.
-* [Architecture Decision Records](architecture_adr.md) — Learn when and how to create an ADR.
+- [Getting Started](../getting-started/introduction.md): Build Atomix and run the tests.
+- [Project structure](project_structure.md): Take a look at the directory tree disposition.
+- [Communication](communication.md): Ask questions, propose ideas and discuss problems.
+- [Development Workflow](development_workflow.md): Learn how changes are developed and reviewed.
+- [Benchmarks](benchmark.md): Learn how to create and run benchmarks.
+-[Architecture Decision Records](architecture_adr.md): Learn when and how to create an ADR.
 
 You do not need to read every page before contributing. Start with what is relevant to your change.
 
