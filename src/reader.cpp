@@ -7,9 +7,9 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#include "reader.hpp"
+#include "../include/io/reader.hpp"
 
-Reader::Reader(const std::string& file_name){
+atomix::Reader::Reader(const std::string& file_name){
 
     fd_ = open(file_name.c_str(), O_RDONLY);
     if (fd_ == -1) {

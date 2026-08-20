@@ -12,8 +12,8 @@
 #include <cassert>
 
 
-#include "data_table.hpp"
-#include "data_type.hpp"
+#include "../include/data/data_table.hpp"
+#include "../include/data/data_type.hpp"
 #include "mem/mem_route.hpp"
 #include "mem/buffer.hpp"
 
