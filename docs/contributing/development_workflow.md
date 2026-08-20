@@ -48,8 +48,7 @@ Explain:
 Other contributors will review the pull request, sometimes they will suggest changes or ask questions.
 Discuss them openly and make the necessary changes.
 
-**Note**: Pull requests targeting `develop` must use the merge commit method. Pull requests 
-from `develop` to main may use rebase (or fast-forward) to keep both branches aligned.
+**Note**: Pull requests must use the merge commit method.
 
 
 ## General rule

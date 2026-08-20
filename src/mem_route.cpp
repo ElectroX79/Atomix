@@ -56,7 +56,7 @@ namespace atomix::mem::mem_route{
                 return;
 
             case AllocationType::none:
-                throw std::runtime_error("Allocation type is none");
+                return;
 
         }
     }
