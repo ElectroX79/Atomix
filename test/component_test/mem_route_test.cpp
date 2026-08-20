@@ -1,6 +1,6 @@
 #include <stdexcept>
 #include <cstdint>
-
+#include <utility>
 #include <vector>
 
 #include "../external/catch2/catch_amalgamated.hpp"
@@ -84,5 +84,117 @@ TEST_CASE("Buffer") {
         buffers.erase(buffers.begin());
         buffers.clear();
     }
+
+}
+
+TEST_CASE("Copying") {
+    constexpr size_t kb = 1024;
+    constexpr size_t mb = 1024*kb;
+    [[maybe_unused]] constexpr size_t gb = 1024*mb;
+
+    size_t chunk_size;
+
+    std::vector<std::shared_ptr<atomix::mem::Buffer>> buffers = atomix::mem::mem_route::allocate(mb, chunk_size, 64);
+
+    for (auto& buffer : buffers) {
+        memset(buffer->get_begin(), 0xAB, buffer->get_size());
+    }
+
+
+
+    SECTION("Full deep copy") {
+        std::vector copy_types(buffers.size(), atomix::mem::CopyType::Deep);
+        const auto aux = atomix::mem::mem_route::copy(buffers, copy_types);
+
+        CHECK(buffers.size() == aux.size());
+        for (size_t i = 0; i < buffers.size(); ++i) {
+            CHECK(memcmp(buffers[i]->get_begin(), aux[i]->get_begin(), buffers[i]->get_size()) == 0);
+            CHECK(buffers[i] != aux[i]);
+
+            std::memset(aux[i]->get_begin(), 0x11, aux[i]->get_size());
+            CHECK(memcmp(buffers[i]->get_begin(), aux[i]->get_begin(), buffers[i]->get_size()) != 0);
+
+        }
+
+    }
+
+    SECTION("Full shallow copy") {
+        std::vector copy_types(buffers.size(), atomix::mem::CopyType::Shallow);
+        const auto aux = atomix::mem::mem_route::copy(buffers, copy_types);
+
+        CHECK(buffers.size() == aux.size());
+        for (size_t i = 0; i < buffers.size(); ++i) {
+            CHECK(memcmp(buffers[i]->get_begin(), aux[i]->get_begin(), buffers[i]->get_size()) == 0);
+            CHECK(buffers[i] == aux[i]);
+
+            std::memset(aux[i]->get_begin(), 0x11, aux[i]->get_size());
+            CHECK(memcmp(buffers[i]->get_begin(), aux[i]->get_begin(), buffers[i]->get_size()) == 0);
+        }
+    }
+
+    SECTION("Full reinitialize copy") {
+        std::vector copy_types(buffers.size(), atomix::mem::CopyType::Reinitialize);
+        const auto aux = atomix::mem::mem_route::copy(buffers, copy_types);
+
+        CHECK(buffers.size() == aux.size());
+        for (size_t i = 0; i < buffers.size(); ++i) {
+            CHECK(buffers[i] != aux[i]);
+        }
+
+    }
+
+    SECTION("Mixed") {
+        //pattern: deep, shallow, reinitialize
+        std::vector<atomix::mem::CopyType> copy_types(buffers.size());
+        for (size_t i = 0; i < buffers.size(); ++i) {
+            switch (i % 3) {
+                case 0:
+                    copy_types[i] = atomix::mem::CopyType::Deep;
+                    break;
+                case 1:
+                    copy_types[i] = atomix::mem::CopyType::Shallow;
+                    break;
+                case 2:
+                    copy_types[i] = atomix::mem::CopyType::Reinitialize;
+                    break;
+                default:
+                    std::abort();
+            }
+        }
+        const auto aux = atomix::mem::mem_route::copy(buffers, copy_types);
+
+        CHECK(buffers.size() == aux.size());
+        for (size_t i = 0; i < buffers.size(); ++i) {
+            switch (i % 3) {
+                case 0: //deep
+                    CHECK(memcmp(buffers[i]->get_begin(), aux[i]->get_begin(), buffers[i]->get_size()) == 0);
+                    CHECK(buffers[i] != aux[i]);
+
+                    std::memset(aux[i]->get_begin(), 0x11, aux[i]->get_size());
+                    CHECK(memcmp(buffers[i]->get_begin(), aux[i]->get_begin(), buffers[i]->get_size()) != 0);
+                    break;
+                case 1: //shallow
+                    CHECK(memcmp(buffers[i]->get_begin(), aux[i]->get_begin(), buffers[i]->get_size()) == 0);
+                    CHECK(buffers[i] == aux[i]);
+
+                    std::memset(aux[i]->get_begin(), 0x11, aux[i]->get_size());
+                    CHECK(memcmp(buffers[i]->get_begin(), aux[i]->get_begin(), buffers[i]->get_size()) == 0);
+                    break;
+                case 2: //reinitialize
+                    CHECK(buffers[i] != aux[i]);
+                    break;
+                default:
+                    std::abort();
+            }
+
+        }
+
+    }
+
+
+
+
+
+
 
 }
