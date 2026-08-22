@@ -8,7 +8,7 @@
 
 #include <unistd.h>
 
-namespace atomix {
+namespace atomix::io {
     class Reader {
     private:
         int fd_ = -1;
@@ -21,8 +21,21 @@ namespace atomix {
 
         Reader(const Reader&) = delete;
         Reader& operator=(const Reader&) = delete;
-        Reader(Reader&&) = default;
-        Reader& operator=(Reader&&) = default;
+        Reader(Reader&& other)noexcept: fd_(other.fd_), size_(other.size_), begin_(other.begin_) {}
+        Reader& operator=(Reader&& other)noexcept{
+            if (this != &other) {
+                munmap(static_cast<void*>(begin_), size_);
+                close(fd_);
+                this->fd_ = other.fd_;
+                this->size_ = other.size_;
+                this->begin_ = other.begin_;
+
+                other.fd_ = -1;
+                other.size_ = 0;
+                other.begin_ = nullptr;
+            }
+            return *this;
+        }
 
 
         /**
