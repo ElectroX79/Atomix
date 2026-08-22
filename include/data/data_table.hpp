@@ -71,32 +71,48 @@ namespace atomix {
          *
         **/
         void get_buffer_pos(const size_t col_index, const size_t offset, size_t& buffer_index, size_t& remainder)const{
-            const size_t chunk_size = columns_[col_index].chunk_size;
-            const size_t byte_size = data_type_utils::byte_size_fixed(columns_[col_index].type);
+            if (columns_[col_index].type != DataType::List) {
+                const size_t chunk_size = columns_[col_index].chunk_size;
+                const size_t byte_size = data_type_utils::byte_size_fixed(columns_[col_index].type);
 
-            if (chunk_size == 0) {
-                buffer_index = 0;
-                remainder = offset* byte_size ;
-                return;
+                if (chunk_size == 0) {
+                    buffer_index = 0;
+                    remainder = offset* byte_size ;
+                    return;
+                }
+
+                buffer_index = offset* byte_size  / chunk_size;
+                remainder = offset* byte_size  % chunk_size;
             }
-
-            buffer_index = offset* byte_size  / chunk_size;
-            remainder = offset* byte_size  % chunk_size;
+            else {
+                throw std::logic_error("List support not implemented yet for get_buffer_pos()");
+                //Implement
+            }
         }
 
-        template<DataType DT>
+        template<DataType DT, DataType DT2 = DataType::Undefined> //if DT != DataType::List, then DT2 == DataType::Undefined
         void get_buffer_pos(const size_t col_index, const size_t offset, size_t& buffer_index, size_t& remainder)const{
-            using T = type_of_t<DT>;
-            const size_t chunk_size = columns_[col_index].chunk_size;
 
-            if (chunk_size == 0) {
-                buffer_index = 0;
-                remainder = offset*sizeof(T);
-                return;
+
+            if constexpr(DT != DataType::List) {
+                using T = type_of_t<DT>;
+                const size_t chunk_size = columns_[col_index].chunk_size;
+
+                if (chunk_size == 0) {
+                    buffer_index = 0;
+                    remainder = offset*sizeof(T);
+                    return;
+                }
+
+                buffer_index = offset*sizeof(T) / chunk_size;
+                remainder = offset*sizeof(T)  % chunk_size;
             }
+            else {
+                throw std::logic_error("List support not implemented yet for get_buffer_pos()");
+                using T_aux = type_of_t<DT2>; //variable_type
+                //Implement
 
-            buffer_index = offset*sizeof(T) / chunk_size;
-            remainder = offset*sizeof(T)  % chunk_size;
+            }
         }
 
 
@@ -182,7 +198,7 @@ namespace atomix {
         /**
         * @brief Accesses a list by column index and logical offset.
         *
-        * @tparam DT The data type stored by the list.
+        * @tparam DT The data type stored by the list, for example, a list of char (a pseudo string) DT == DataType::Char
         * @param col_index The column index.
         * @param offset The logical list index.
         * @return A span containing the list elements.
@@ -192,7 +208,10 @@ namespace atomix {
         template<DataType DT>
        [[nodiscard]] std::span<type_of_t<DT>> at_list(const size_t col_index,const size_t offset)const {
             //TODO: do when implemented list support
-            //Notice that the method at() with DataType::List could have O(N), where N is numbers of chunks cost without extra infrastructure,
+
+            //You should implement firstly get_buffer_pos() for DataType::List, in that way this method would be easier to implement.
+
+            //Notice that the method at() with DataType::List could have O(N) because get_buffer_pos(), where N is numbers of chunks cost without extra infrastructure,
             //that's expected for now.
             //Note: For sequential massive access is still O(1), depending of the scope.
             throw std::logic_error("List support not implemented yet for at()");
