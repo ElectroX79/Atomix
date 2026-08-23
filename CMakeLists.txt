@@ -25,6 +25,7 @@ function(create_atomix_core target)
     target_sources(${target} PRIVATE
             src/mem_route.cpp
             src/data_table.cpp
+            src/buffer.cpp
     )
     target_include_directories(${target} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 endfunction()
