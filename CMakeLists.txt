@@ -61,3 +61,6 @@ enable_sanitizers(mem_route_test)
 #executable mem_route_benchmark
 create_test_instance(mem_route_benchmark test/benchmark/mem_route/mem_route_benchmark.cpp AtomixCore)
 
+#executable buffer_benchmark
+create_test_instance(buffer_benchmark test/benchmark/buffer/buffer.cpp AtomixCore)
+
