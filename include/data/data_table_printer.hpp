@@ -28,19 +28,19 @@ namespace atomix{
                     abort();
                 }
                 for (const auto& buffer : dt.columns_[i].buffers ) {
-                    for (size_t k = 0; k < buffer->get_size(); k+=opt.value()) {
+                    for (size_t k = 0; k < buffer.get_size(); k+=opt.value()) {
 
                         switch (dt.column_datatype(i)) {
                             case DataType::Bool:
-                                std::cout << (buffer->get_begin()[k] == 0 ? "false" : "true") << " ";
+                                std::cout << (buffer.get_begin()[k] == 0 ? "false" : "true") << " ";
                                 break;
 
                             case DataType::Int32:
-                                std::cout << *(reinterpret_cast<int32_t*> (buffer->get_begin() + k)) << " ";
+                                std::cout << *(reinterpret_cast<int32_t*> (buffer.get_begin() + k)) << " ";
                                 break;
 
                             case DataType::Float64:
-                                std::cout << *(reinterpret_cast<double*> (buffer->get_begin() + k)) << " ";
+                                std::cout << *(reinterpret_cast<double*> (buffer.get_begin() + k)) << " ";
                                 break;
 
                             default:
