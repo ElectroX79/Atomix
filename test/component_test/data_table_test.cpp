@@ -56,7 +56,8 @@ TEST_CASE("DataTable: empty table supports zero-length extract and erase", "[ato
     const atomix::DataTable table;
 
     const atomix::DataTable extracted = table.extract(0, 0);
-    const atomix::DataTable erased = table.erase(0, 0);
+    atomix::DataTable erased = table;
+    erased.erase(0, 0);
 
     CHECK(extracted.n_columns() == 0);
     CHECK(erased.n_columns() == 0);
@@ -189,61 +190,61 @@ TEST_CASE("DataTable: extract can select prefix, middle, suffix, and empty range
 }
 
 TEST_CASE("DataTable: erase can remove all columns", "[atomix::DataTable][erase]") {
-    const atomix::DataTable table = make_four_column_table();
+    atomix::DataTable table = make_four_column_table();
 
-    const atomix::DataTable erased = table.erase(0, table.n_columns());
+    table.erase(0, table.n_columns());
 
-    CHECK(erased.n_columns() == 0);
+    CHECK(table.n_columns() == 0);
 }
 
 TEST_CASE("DataTable: erase can remove prefix, middle, suffix, and empty ranges", "[atomix::DataTable][erase]") {
-    const atomix::DataTable table = make_four_column_table();
+    atomix::DataTable table = make_four_column_table();
 
     SECTION("prefix") {
-        const atomix::DataTable erased = table.erase(0, 1);
+        table.erase(0, 1);
 
-        REQUIRE(erased.n_columns() == 3);
-        check_column(erased, 0, "values", atomix::DataType::Float64, 3);
-        check_column(erased, 1, "flags", atomix::DataType::Char, 3);
-        check_column(erased, 2, "names", atomix::DataType::List, 3);
+        REQUIRE(table.n_columns() == 3);
+        check_column(table, 0, "values", atomix::DataType::Float64, 3);
+        check_column(table, 1, "flags", atomix::DataType::Char, 3);
+        check_column(table, 2, "names", atomix::DataType::List, 3);
     }
 
     SECTION("middle single column") {
-        const atomix::DataTable erased = table.erase(1, 2);
+        table.erase(1, 2);
 
-        REQUIRE(erased.n_columns() == 3);
-        check_column(erased, 0, "ids", atomix::DataType::Int32, 3);
-        check_column(erased, 1, "flags", atomix::DataType::Char, 3);
-        check_column(erased, 2, "names", atomix::DataType::List, 3);
+        REQUIRE(table.n_columns() == 3);
+        check_column(table, 0, "ids", atomix::DataType::Int32, 3);
+        check_column(table, 1, "flags", atomix::DataType::Char, 3);
+        check_column(table, 2, "names", atomix::DataType::List, 3);
     }
 
     SECTION("suffix") {
-        const atomix::DataTable erased = table.erase(2, 3);
+        table.erase(2, 3);
 
-        REQUIRE(erased.n_columns() == 3);
-        check_column(erased, 0, "ids", atomix::DataType::Int32, 3);
-        check_column(erased, 1, "values", atomix::DataType::Float64, 3);
-        check_column(erased, 2, "names", atomix::DataType::List, 3);
+        REQUIRE(table.n_columns() == 3);
+        check_column(table, 0, "ids", atomix::DataType::Int32, 3);
+        check_column(table, 1, "values", atomix::DataType::Float64, 3);
+        check_column(table, 2, "names", atomix::DataType::List, 3);
     }
 
     SECTION("empty range at beginning keeps all columns") {
-        const atomix::DataTable erased = table.erase(0, 0);
+        table.erase(0, 0);
 
-        REQUIRE(erased.n_columns() == 4);
-        check_column(erased, 0, "ids", atomix::DataType::Int32, 3);
-        check_column(erased, 1, "values", atomix::DataType::Float64, 3);
-        check_column(erased, 2, "flags", atomix::DataType::Char, 3);
+        REQUIRE(table.n_columns() == 4);
+        check_column(table, 0, "ids", atomix::DataType::Int32, 3);
+        check_column(table, 1, "values", atomix::DataType::Float64, 3);
+        check_column(table, 2, "flags", atomix::DataType::Char, 3);
         check_column(table, 3, "names", atomix::DataType::List, 3);
     }
 
     SECTION("empty range at end keeps all columns") {
-        const atomix::DataTable erased = table.erase(table.n_columns(), table.n_columns());
+        table.erase(table.n_columns(), table.n_columns());
 
-        REQUIRE(erased.n_columns() == 4);
-        check_column(erased, 0, "ids", atomix::DataType::Int32, 3);
-        check_column(erased, 1, "values", atomix::DataType::Float64, 3);
-        check_column(erased, 2, "flags", atomix::DataType::Char, 3);
-        check_column(erased, 3, "names", atomix::DataType::List, 3);
+        REQUIRE(table.n_columns() == 4);
+        check_column(table, 0, "ids", atomix::DataType::Int32, 3);
+        check_column(table, 1, "values", atomix::DataType::Float64, 3);
+        check_column(table, 2, "flags", atomix::DataType::Char, 3);
+        check_column(table, 3, "names", atomix::DataType::List, 3);
     }
 }
 
@@ -257,11 +258,11 @@ TEST_CASE("DataTable: append combines columns in order", "[atomix::DataTable][ap
     atomix::DataTableTester::artificial_append_fixed<atomix::DataType::Int32>(left, left_values, "left_values");
     atomix::DataTableTester::artificial_append_fixed<atomix::DataType::Float64>(right, right_values, "right_values");
 
-    const atomix::DataTable appended = left.append(right);
+    left.append(right);
 
-    REQUIRE(appended.n_columns() == 2);
-    check_column(appended, 0, "left_values", atomix::DataType::Int32, left_values.size());
-    check_column(appended, 1, "right_values", atomix::DataType::Float64, right_values.size());
+    REQUIRE(left.n_columns() == 2);
+    check_column(left, 0, "left_values", atomix::DataType::Int32, left_values.size());
+    check_column(left, 1, "right_values", atomix::DataType::Float64, right_values.size());
 }
 
 TEST_CASE("DataTable: append handles empty operands", "[atomix::DataTable][append][empty]") {
@@ -272,23 +273,23 @@ TEST_CASE("DataTable: append handles empty operands", "[atomix::DataTable][appen
     atomix::DataTableTester::artificial_append_fixed<atomix::DataType::Int32>(non_empty, values,  "values");
 
     SECTION("empty appended to empty") {
-        const atomix::DataTable result = empty.append(empty);
+        empty.append(empty);
 
-        CHECK(result.n_columns() == 0);
+        CHECK(empty.n_columns() == 0);
     }
 
     SECTION("empty appended after non-empty") {
-        const atomix::DataTable result = non_empty.append(empty);
+        non_empty.append(empty);
 
-        REQUIRE(result.n_columns() == 1);
-        check_column(result, 0, "values", atomix::DataType::Int32, values.size());
+        REQUIRE(non_empty.n_columns() == 1);
+        check_column(non_empty, 0, "values", atomix::DataType::Int32, values.size());
     }
 
     SECTION("non-empty appended after empty") {
-        const atomix::DataTable result = empty.append(non_empty);
+        empty.append(non_empty);
 
-        REQUIRE(result.n_columns() == 1);
-        check_column(result, 0, "values", atomix::DataType::Int32, values.size());
+        REQUIRE(empty.n_columns() == 1);
+        check_column(empty, 0, "values", atomix::DataType::Int32, values.size());
     }
 }
 
@@ -297,12 +298,11 @@ TEST_CASE("DataTable: append with self duplicates metadata", "[atomix::DataTable
 
     atomix::DataTable table;
     atomix::DataTableTester::artificial_append_fixed<atomix::DataType::Int32>(table, values,  "values");
+    table.append(table);
 
-    const atomix::DataTable result = table.append(table);
-
-    REQUIRE(result.n_columns() == 2);
-    check_column(result, 0, "values", atomix::DataType::Int32, values.size());
-    check_column(result, 1, "values", atomix::DataType::Int32, values.size());
+    REQUIRE(table.n_columns() == 2);
+    check_column(table, 0, "values", atomix::DataType::Int32, values.size());
+    check_column(table, 1, "values", atomix::DataType::Int32, values.size());
 }
 
 TEST_CASE("DataTable: copy constructor preserves table metadata", "[atomix::DataTable][copy]") {
@@ -433,8 +433,13 @@ TEST_CASE("DataTable: composed extract, erase, and append preserve resulting ord
     const atomix::DataTable table = make_four_column_table();
 
     const atomix::DataTable only_ids = table.extract(0, 1);
-    const atomix::DataTable without_ids = table.erase(0, 1);
-    const atomix::DataTable recombined = without_ids.append(only_ids);
+
+
+    atomix::DataTable without_ids = table;
+    without_ids.erase(0, 1);
+
+    atomix::DataTable recombined = without_ids;
+    recombined.append(only_ids);
 
     REQUIRE(recombined.n_columns() == 4);
     check_column(recombined, 0, "values", atomix::DataType::Float64, 3);
@@ -443,3 +448,12 @@ TEST_CASE("DataTable: composed extract, erase, and append preserve resulting ord
     check_column(recombined, 3, "ids", atomix::DataType::Int32, 3);
 
 }
+
+/*
+
+const atomix::DataTable table = make_four_column_table();
+
+const atomix::DataTable only_ids = table.extract(0, 1);
+const atomix::DataTable without_ids = table.erase(0, 1);
+const atomix::DataTable recombined = without_ids.append(only_ids);
+*/
