@@ -19,8 +19,9 @@ namespace atomix::mem {
         Buffer(mem_route::allocate_buffer(other.size_, other.alloc_t_)){
         memcpy(begin_, other.begin_, other.size_);
     }
+
     Buffer& Buffer::operator=(const Buffer& other) noexcept {
-        //TODO: fix mem leakage
+        mem_route::deallocate(begin_, alloc_t_);
         *this = mem_route::allocate_buffer(other.size_, other.alloc_t_);
         memcpy(begin_, other.begin_, other.size_);
         return *this;

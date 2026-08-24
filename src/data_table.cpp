@@ -13,23 +13,18 @@
     return td;
 }
 
-[[nodiscard]] atomix::DataTable atomix::DataTable::append(const DataTable &t_data) const {
-    DataTable td;
-    td.columns_ = this->columns_;
-    td.columns_.insert(td.columns_.end(), t_data.columns_.begin(), t_data.columns_.end());
-    return td;
+void atomix::DataTable::append(const DataTable &t_data) {
+    if (this == &t_data) {
+        DataTable aux = t_data;
+        columns_.insert(columns_.end(), aux.columns_.begin(), aux.columns_.end());
+        return;
+    }
+    columns_.insert(columns_.end(), t_data.columns_.begin(), t_data.columns_.end());
+
 }
 
 
-[[nodiscard]]atomix::DataTable atomix::DataTable::erase(const size_t begin, const size_t end) const {
-    DataTable td;
-    atomix::bounds::check_index_interval(begin, end, this->columns_.size());
-    td.columns_.reserve(this->columns_.size() - (end - begin));
-    if (begin > 0) {
-        td.columns_.insert(td.columns_.begin(), this->columns_.begin(), this->columns_.begin() + begin);
-    }
-    if (end < this->columns_.size()) {
-        td.columns_.insert(td.columns_.end(), this->columns_.begin() + end, this->columns_.end());
-    }
-    return td;
+void atomix::DataTable::erase(const size_t begin, const size_t end) {
+    bounds::check_index_interval(begin, end, columns_.size());
+    columns_.erase(columns_.begin() + begin, columns_.begin() + end);
 }

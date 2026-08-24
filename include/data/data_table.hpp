@@ -230,7 +230,7 @@ namespace atomix {
         * * @note Always appends at the end of the tabular data
         * * @note Always at the end of the tabular data
         */
-        [[nodiscard]]DataTable append(const DataTable &t_data)const;
+        void append(const DataTable &t_data);
 
         /**
          * @brief Erase an interval of columns of the current tabular data
@@ -238,7 +238,7 @@ namespace atomix {
          * * @param end The last index of the interval of columns to erase
          * * @note Consider [begin, end)
          */
-        [[nodiscard]]DataTable erase(size_t begin, size_t end)const;
+        void erase(size_t begin, size_t end);
 
 
 
