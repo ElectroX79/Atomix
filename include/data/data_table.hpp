@@ -30,7 +30,7 @@ namespace atomix {
 
         struct Column {
             std::string name;
-            std::vector<std::shared_ptr<atomix::mem::Buffer>> buffers;
+            std::vector <mem::Buffer> buffers;
             std::vector<ListMetadata> list_metadata;
             size_t n_elements;
             size_t chunk_size; // 0 if it's not chunked (if chunk_size == 0 -> vector<shared_ptr<buffer>>.size() <= 1)
@@ -38,7 +38,7 @@ namespace atomix {
             DataType variable_type; //CANNOT BE LIST. Also, if type != DataType::List, then variable_type == DataType::Undefined
 
             Column(std::string&& name1,
-                std::vector<std::shared_ptr<atomix::mem::Buffer>>&& buffer1,
+                std::vector<mem::Buffer>&& buffer1,
                 std::vector<ListMetadata>&& list_metadata1,
                 const size_t n_elements1,
                 const size_t chunk_size1,
@@ -109,8 +109,9 @@ namespace atomix {
             }
             else {
                 throw std::logic_error("List support not implemented yet for get_buffer_pos()");
-                using T_aux = type_of_t<DT2>; //variable_type
-                //Implement
+
+                using T_aux [[maybe_unused]] = type_of_t<DT2> ; //variable_type, delete [[maybe_unused]] when implemented
+
 
             }
         }
@@ -125,15 +126,10 @@ namespace atomix {
         DataTable() = default;
 
         DataTable(const DataTable& other) = default;
-        DataTable& operator=(const DataTable& other){
-            if (this != &other){
-                columns_ = other.columns_;
-            }
-            return *this;
-        }
+        DataTable& operator=(const DataTable& other)noexcept = default;
 
         DataTable(DataTable&& other) = default;
-        DataTable& operator=(DataTable&& other){
+        DataTable& operator=(DataTable&& other)noexcept{
             if (this != &other){
                 columns_ = std::move(other.columns_);
             }
@@ -191,7 +187,7 @@ namespace atomix {
 
             size_t buffer_index, remainder;
             get_buffer_pos<DT>(col_index, offset, buffer_index, remainder);
-            return *reinterpret_cast<T*>(columns_[col_index].buffers[buffer_index]->get_begin() + remainder);
+            return *reinterpret_cast<T*>(columns_[col_index].buffers[buffer_index].get_begin() + remainder);
             //TODO: study using std::start_lifetime_as<T*> if it cannot assure lifetime
         }
 

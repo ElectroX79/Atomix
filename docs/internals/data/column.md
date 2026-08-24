@@ -5,12 +5,9 @@ A `Column` is the internal representation of a column in a `DataTable`.
 Its responsibility is to store values of a single data type together with the metadata required to manage them.
 ## Buffer ownership
 
-A `Column` stores its buffers in a `std::vector<std::shared_ptr<Buffer>>` where each buffer is a chunk.
+A `Column` stores its buffers in a `std::vector<Buffer>` where each buffer is a chunk.
 
 Using a `std::vector` provides efficient sequential iteration while allowing the number of buffers to grow dynamically as the column expands.
-
-Buffers are managed through `std::shared_ptr` because they may be shared by multiple `Column` instances. This enables future features such as Copy-on-Write without 
-requiring the physical duplication of memory when a column is copied.
 
 
 ## Metadata

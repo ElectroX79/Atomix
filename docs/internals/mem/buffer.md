@@ -12,5 +12,5 @@ Buffer is composed of:
 ## Behavior
 
 This class will be created by `Mem_route` that will be responsible for allocating the memory block
-(See [Mem_route](mem_route.md)) and usually wrapped by a `std::shared_ptr`. When the buffer reaches the end of its lifetime, the destroyer
+(See [Mem_route](mem_route.md)). When the buffer reaches the end of its lifetime, the destroyer
 will call `Mem_route` to free the memory block, before destructing the buffer.
