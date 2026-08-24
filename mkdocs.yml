@@ -43,9 +43,10 @@ nav:
       - ADR-0001: adr/adr-0001-shared_ownership_buffer.md
       - ADR-0002: adr/adr-0002-chunked_column_storage.md
       - ADR-0003: adr/adr-0003-removal_vmem_chunk.md
-
+      - ADR-0004: adr/adr-0004-removal_of_cow.md
   - Benchmarks:
     - Memory allocation strategies: benchmarks/memory_allocation_performance.md
+    - Buffer Ownership and Copy Performance: benchmarks/cow_buffer_ownership.md
 
   - Future features:
     - Introduction: future_features/introduction.md

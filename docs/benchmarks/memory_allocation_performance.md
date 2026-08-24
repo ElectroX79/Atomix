@@ -47,6 +47,8 @@ using the same DataTable workload (see test/benchmark/benchmark_mem_route.cpp)
 
 ### Result of the measures
 
+
+
 The columns are created from the following templates:
 
 - Int32 = {1, 2, 3}
@@ -126,6 +128,12 @@ Process resources (/usr/bin/time -v)
 |          |                 | Simplified  |   13.93 s |      0.74 s | 14.84 s |     673.33 MiB |            426 |
 
 ---
+
+
+**Note**: You can reproduce the measurements by running the
+benchmark script `scripts/benchmarks/mem_route_benchmark.sh` or directly executing
+the `mem_route_benchmarks` CMake executable (this second does not include profiling and 
+resource usage measurements)
 
 ## Comment on the results
 

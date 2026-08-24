@@ -12,7 +12,7 @@ and optimize the memory allocation strategy depending on the size of the allocat
 - **Small allocations:** use [Aligned allocator](aligned_allocator.md).
 - **Larger allocations:** use aligned allocation with 64 KiB chunking.
 
-The caller receives a vector of shared pointers of `Buffer` (just one if the allocation is small), and
+The caller receives a vector of `Buffer` (just one if the allocation is small), and
 the size of each chunk (0 if it is not chunked).
 
 ## Why a routing layer?
