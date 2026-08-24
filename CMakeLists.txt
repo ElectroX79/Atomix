@@ -25,6 +25,7 @@ function(create_atomix_core target)
     target_sources(${target} PRIVATE
             src/mem_route.cpp
             src/data_table.cpp
+            src/buffer.cpp
     )
     target_include_directories(${target} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 endfunction()
@@ -60,4 +61,8 @@ enable_sanitizers(mem_route_test)
 
 #executable mem_route_benchmark
 create_test_instance(mem_route_benchmark test/benchmark/mem_route/mem_route_benchmark.cpp AtomixCore)
+
+#executable buffer_benchmark
+create_test_instance(buffer_benchmark test/benchmark/buffer/buffer.cpp AtomixCore)
+
 

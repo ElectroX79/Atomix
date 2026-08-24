@@ -56,12 +56,12 @@ namespace atomix {
 
             const size_t byte_size = data_type_utils::byte_size_fixed(DT1);
             size_t chunk_size;
-            std::vector<std::shared_ptr<mem::Buffer>> buffers = mem::mem_route::allocate(v.size() * byte_size, chunk_size, 64);
+            std::vector<mem::Buffer> buffers = mem::mem_route::allocate(v.size() * byte_size, chunk_size, 64);
 
             size_t acc = 0;
             for (const auto& buffer : buffers) {
-                memcpy(buffer->get_begin(),(reinterpret_cast<const uint8_t*> (v.data()) + acc), buffer->get_size());
-                acc += buffer->get_size();
+                memcpy(buffer.get_begin(),(reinterpret_cast<const uint8_t*> (v.data()) + acc), buffer.get_size());
+                acc += buffer.get_size();
             }
             assert(acc == v.size() * byte_size);
             std::vector<DataTable::ListMetadata> list_metadata{};
@@ -123,11 +123,11 @@ namespace atomix {
             size_t chunk_size;
             const size_t total_size = (aux_offsets.size() - 1) * chunk_size_aux + acc;
 
-            std::vector<std::shared_ptr<mem::Buffer>> buffers = mem::mem_route::allocate(total_size, chunk_size, 64);
+            std::vector<mem::Buffer> buffers = mem::mem_route::allocate(total_size, chunk_size, 64);
 
             size_t acc2 = 0;
             for (size_t i = 0; i < aux_offsets.size(); ++i) {
-                memcpy(buffers[i]->get_begin(), reinterpret_cast<uint8_t*>(sp.data()) + acc2, aux_offsets[i].last_used_byte );
+                memcpy(buffers[i].get_begin(), reinterpret_cast<uint8_t*>(sp.data()) + acc2, aux_offsets[i].last_used_byte );
                 acc2 += aux_offsets[i].last_used_byte;
             }
             assert(acc2 == sp.size_bytes());
