@@ -109,8 +109,9 @@ namespace atomix {
             }
             else {
                 throw std::logic_error("List support not implemented yet for get_buffer_pos()");
+
                 using T_aux [[maybe_unused]] = type_of_t<DT2> ; //variable_type, delete [[maybe_unused]] when implemented
-                //Implement
+
 
             }
         }
