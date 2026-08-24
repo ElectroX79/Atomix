@@ -3,7 +3,7 @@
 A data table is a data structure that represents a relational database table which in atomix has the following properties:
 
 - Columnar layout
-- Designed to copy on write (CoW).
+- ~~Designed to copy on write (CoW)~~. **Deprecated**, see [here](../adr/adr-0004-removal_of_cow.md)
 - Chunked storage.
 
 ___
@@ -59,7 +59,9 @@ The main reason of why a proper layout is important is the contiguity, which all
 Notice that both represent the same logical data structure, but each one has a different physical memory layout.
 ___
 
-## 2. About copying on write (COW)
+## 2.  ~~About copying on write (COW)~~ Deprecated
+
+### Why deprecate? See [here](../adr/adr-0004-removal_of_cow.md)
 
 Copy on write is an optimization technique that makes data table immutable and only can be modified by construction.
 
@@ -84,14 +86,16 @@ There are two reasons why this model is beneficial:
 ---
 ## 3. Why does it need chunking?
 
-Copy-on-Write avoids modifying existing data, but copying an entire column is still expensive. For that reason we need to split the entire column
-into smaller chunks which allow just copying the chunk which is being edited.
 
-For example, instead of having: 1 column of 512 KB, it can be an array composed of 8 chunks of 64 KB. 
-Using this example, if the first element is edited, without chunking it will copy 512 KB, but with chunking, 
-it will just copy 64 KB.
+Chunking divides columns into smaller memory regions instead of requiring a
+single large allocation.  For example, a 512 KB column can be represented as 8 chunks of 64 KB.
 
+This allows incremental growth, better memory reuse and expansion, and provides a natural
+granularity for concurrent access.
+
+With the removal of Copy-on-Write, the original motivation for chunking is
+weaker, so its role may be reconsidered or removed in a future design.
 
 ___
 
-To learn more about the implementation, go to [Data Table internals]()
+To learn more about the implementation, go to [Data Table internals](../internals/data/data_table.md)

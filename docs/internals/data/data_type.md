@@ -36,7 +36,10 @@ There are two main reasons.
 
 - Atomix needs a runtime representation of a type that can be stored as ordinary data.
 
-- Not every logical data type has the same implementation as its C++ counterpart. For example, `List` requires a dedicated storage strategy because it has a variable size.
+- Not every logical data type has the same implementation as its C++ counterpart. 
+For example, `List` requires a dedicated storage strategy because it has a variable size
+
+
 ---
 
 ## Does this sacrifice the metaprogramming?
