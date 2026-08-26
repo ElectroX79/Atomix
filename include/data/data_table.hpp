@@ -15,6 +15,11 @@
 
 
 namespace atomix {
+
+    namespace io {
+        class ParserCsv;
+    }
+
     class DataTable{
 
 #ifndef NDEBUG
@@ -22,6 +27,7 @@ namespace atomix {
 #endif
 
         friend struct DataTablePrinter;
+        friend class io::ParserCsv;
 
         struct ListMetadata{
             std::vector<uint32_t> offsets;
