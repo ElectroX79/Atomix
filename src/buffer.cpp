@@ -21,9 +21,11 @@ namespace atomix::mem {
     }
 
     Buffer& Buffer::operator=(const Buffer& other) noexcept {
-        mem_route::deallocate(begin_, alloc_t_);
-        *this = mem_route::allocate_buffer(other.size_, other.alloc_t_);
-        memcpy(begin_, other.begin_, other.size_);
+        if (this != &other) {
+            mem_route::deallocate(begin_, alloc_t_);
+            *this = mem_route::allocate_buffer(other.size_, other.alloc_t_);
+            memcpy(begin_, other.begin_, other.size_);
+        }
         return *this;
     }
 
