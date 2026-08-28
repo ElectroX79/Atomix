@@ -1,8 +1,7 @@
 #include <memory>
 #include "../external/catch2/catch_amalgamated.hpp"
-#include "../../../include/mem/mem_route.hpp"
 
-
+import atomix.mem;
 
 //Note: BENCHMARK in Catch2 repeats the same operation 100 times
 
