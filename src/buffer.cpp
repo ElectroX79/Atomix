@@ -1,10 +1,9 @@
-
-#include "../include/mem/buffer.hpp"
-
+module;
 #include <cstring>
+#include <cstddef>
 
-#include "../include/mem/mem_route.hpp"
-
+module atomix.mem.buffer;
+import atomix.mem.mem_route;
 
 namespace atomix::mem {
 

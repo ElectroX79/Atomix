@@ -1,15 +1,15 @@
-
-#ifndef MEM_ROUTE_HPP
-#define MEM_ROUTE_HPP
-
+module;
 #include <vector>
 #include <memory>
-#include "buffer.hpp"
+#include <cstdint>
 
-#include "allocation_type.hpp"
+export module atomix.mem.mem_route;
+import atomix.mem.buffer;
+import atomix.mem.allocation_type;
 
 
-namespace atomix::mem{
+
+export namespace atomix::mem{
     /*
     enum class CopyType: uint8_t {
         Deep,
@@ -33,6 +33,6 @@ namespace atomix::mem{
 
 }
 
-#endif
+
 
 

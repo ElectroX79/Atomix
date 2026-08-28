@@ -1,15 +1,16 @@
-#include "mem/mem_route.hpp"
-
+module;
 #include <cstring>
 #include <vector>
 #include <memory>
 #include <iostream>
-
 #include "cassert"
-#include "mem/aligned_allocator.hpp"
-#include "mem/buffer.hpp"
-#include "mem/allocation_type.hpp"
-#include "../include/security_check.hpp"
+
+module atomix.mem.mem_route;
+
+import atomix.mem.buffer;
+import atomix.mem.allocation_type;
+import atomix.mem.aligned_allocator;
+import atomix.bounds;
 
 namespace atomix::mem::mem_route{
     namespace {

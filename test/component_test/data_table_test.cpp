@@ -1,3 +1,5 @@
+
+
 #include <cstdint>
 #include <stdexcept>
 #include <string>
@@ -7,10 +9,9 @@
 #include <ranges>
 
 #include "../external/catch2/catch_amalgamated.hpp"
-#include "../include/data_table_tester.hpp"
-#include "../include/data/data_table_printer.hpp"
-#include "../include/data/data_table.hpp"
-#include "../include/data/data_type.hpp"
+
+import atomix.data;
+import atomix.mem;
 
 namespace {
     atomix::DataTable make_four_column_table() {

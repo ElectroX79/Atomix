@@ -1,14 +1,12 @@
 
-
+module;
 #include <stdexcept>
 #include <sys/mman.h>
 #include <cstdint>
-
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#include "../include/io/reader.hpp"
-
+module atomix.io.reader;
 
 atomix::io::Reader::Reader(const std::string& file_name){
 
