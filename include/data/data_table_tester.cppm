@@ -1,8 +1,5 @@
+module;
 #ifndef NDEBUG
-
-
-#ifndef TABULAR_DATA_TESTER_HPP
-#define TABULAR_DATA_TESTER_HPP
 
 #include <vector>
 #include <memory>
@@ -10,15 +7,17 @@
 #include <cstring>
 #include <string>
 #include <cassert>
+#include <iostream>
+#include <cstdlib>
+#include <span>
 
 
-#include "../include/data/data_table.hpp"
-#include "../include/data/data_type.hpp"
-#include "mem/mem_route.hpp"
-#include "mem/buffer.hpp"
+export module atomix.data.data_table:tester;
+import :core;
+import atomix.data.data_type;
+import atomix.mem;
 
-
-namespace atomix {
+export namespace atomix {
     class DataTableTester{
     public:
 
@@ -151,8 +150,5 @@ namespace atomix {
 
 
 
-
-
-#endif //TABULAR_DATA_TESTER_HPP
 
 #endif//NDEBUG

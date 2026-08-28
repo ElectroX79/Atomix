@@ -1,5 +1,4 @@
-#ifndef DATA_TABLE_HPP
-#define DATA_TABLE_HPP
+module;
 
 #include <vector>
 #include <stdexcept>
@@ -9,23 +8,26 @@
 #include <cstdlib>
 
 
-#include "data_type.hpp"
-#include "mem/buffer.hpp"
-#include "security_check.hpp"
+export module atomix.data.data_table:core;
+import atomix.data.data_type;
+import atomix.mem;
+import atomix.bounds;
 
 
-namespace atomix {
+namespace atomix::io {
+    class ParserCsv;
+}
 
-    namespace io {
-        class ParserCsv;
-    }
+export namespace atomix {
+
+
 
     class DataTable{
 
 #ifndef NDEBUG
         friend class DataTableTester;
 #endif
-
+        //TODO: Consider creating a proxy accessor instead of friend class/struct
         friend struct DataTablePrinter;
         friend class io::ParserCsv;
 
@@ -254,4 +256,3 @@ namespace atomix {
 }
 
 
-#endif 

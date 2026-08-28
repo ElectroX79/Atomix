@@ -1,13 +1,13 @@
-#ifndef SECURITY_CHECK_HPP
-#define SECURITY_CHECK_HPP
 
-
+module;
 #include <iostream>
-#include <cassert>
 #include <cstdlib>
 
 
-namespace atomix::bounds{
+export module atomix.bounds;
+
+
+export namespace atomix::bounds{
      //TODO (maybe also to the entire codebase): consider use std::contract (c++26) for precondition and postcondition instead of abort()
 
      inline void check_index_interval(const size_t begin, const size_t end, const size_t container_size) {
@@ -33,6 +33,3 @@ namespace atomix::bounds{
 
 };
 
- 
-
-#endif

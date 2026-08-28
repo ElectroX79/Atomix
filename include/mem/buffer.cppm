@@ -1,12 +1,11 @@
-#ifndef BUFFER_HPP
-#define BUFFER_HPP
-
+module;
 #include <cstdint>
+#include <cstddef>
 
-#include "allocation_type.hpp"
+export module atomix.mem.buffer;
+import atomix.mem.allocation_type;
 
-
-namespace atomix::mem {
+export namespace atomix::mem {
     class Buffer {
 
     private:
@@ -60,5 +59,4 @@ namespace atomix::mem {
 
 
 
-#endif
 

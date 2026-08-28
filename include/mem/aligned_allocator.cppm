@@ -1,11 +1,12 @@
-#ifndef ALIGN_ALLOC_HPP
-#define ALIGN_ALLOC_HPP
+module;
 #include <cstdint>
 #include <stdexcept>
 #include <system_error>
 
+export module atomix.mem.aligned_allocator;
 
-namespace atomix::mem::aligned_allocator{
+
+export namespace atomix::mem::aligned_allocator{
 
     [[nodiscard]]inline uint8_t* allocate(const size_t size, const size_t alignment = 64) {
 
@@ -42,5 +43,3 @@ namespace atomix::mem::aligned_allocator{
 
 
 
-
-#endif

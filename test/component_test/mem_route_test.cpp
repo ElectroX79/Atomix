@@ -4,8 +4,9 @@
 #include <vector>
 
 #include "../external/catch2/catch_amalgamated.hpp"
-#include "mem/mem_route.hpp"
-#include "mem/buffer.hpp"
+
+import atomix.mem;
+
 namespace {
     void check_integrity(const size_t size) {
 

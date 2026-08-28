@@ -1,8 +1,9 @@
-
+module;
 #include <vector>
 
-#include "../include/data/data_table.hpp"
-#include "security_check.hpp"
+module atomix.data.data_table;
+import atomix.data.data_type;
+import atomix.bounds;
 
 
 [[nodiscard]] atomix::DataTable atomix::DataTable::extract(const size_t begin, const size_t end) const {
