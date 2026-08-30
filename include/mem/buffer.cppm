@@ -18,6 +18,8 @@ export namespace atomix::mem {
 
         Buffer(uint8_t* begin, const size_t size, const AllocationType alloc_t): begin_(begin), size_(size), alloc_t_(alloc_t) {}
 
+        Buffer(size_t size, size_t alignment);
+
         Buffer(const Buffer& other) noexcept;
         Buffer& operator=(const Buffer& other) noexcept;
         Buffer(Buffer&& other)noexcept;
