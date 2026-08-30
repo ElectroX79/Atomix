@@ -1,10 +1,14 @@
-#ifndef PARSER_CSV_HPP
-#define PARSER_CSV_HPP
+module;
 
-#include "reader.hpp"
-#include "../data/data_table.hpp"
+#include <cstddef>
 
-namespace atomix::io {
+
+export module atomix.io.parser_csv;
+import atomix.data;
+import atomix.io.reader;
+
+
+export namespace atomix::io {
     class ParserCsv {
         /** @brief It reads the first row, complete the DataTable with the names,
          * and return the size of the first row (including line break).
@@ -22,4 +26,3 @@ namespace atomix::io {
 
 
 
-#endif

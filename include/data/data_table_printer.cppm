@@ -1,13 +1,15 @@
-#ifndef DATA_TABLE_PRINTER
-#define DATA_TABLE_PRINTER
 
+module;
 #include <iostream>
-#include "data_table.hpp"
-#include "data_type.hpp"
+
+export module atomix.data.data_table:printer;
+import :core;
+import atomix.data.data_type;
 
 
-namespace atomix{
+export namespace atomix{
     struct DataTablePrinter{
+        DataTablePrinter() = delete;
         static void metadata(const DataTable& dt) {
             for (size_t i = 0; i < dt.columns_.size(); ++i) {
                 std::cout << dt.column_name(i) << ": ";
@@ -56,4 +58,4 @@ namespace atomix{
 
 }
 
-#endif
+

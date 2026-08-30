@@ -1,14 +1,14 @@
-#ifndef READER_HPP
-#define READER_HPP
-
-
+module;
 #include <stdexcept>
 #include <sys/mman.h>
 #include <cstdint>
 
 #include <unistd.h>
 
-namespace atomix::io {
+
+export module atomix.io.reader;
+
+export namespace atomix::io {
     class Reader {
     private:
         int fd_ = -1;
@@ -84,7 +84,3 @@ namespace atomix::io {
 
 
 
-
-
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef DATATYPE_HH
-#define DATATYPE_HH
+module;
 
 #include <optional>
 #include <string>
@@ -8,7 +7,10 @@
 #include <iostream>
 #include <cstdlib>
 
-namespace atomix {
+
+export module atomix.data.data_type;
+
+export namespace atomix {
     enum class DataType : uint8_t{
         Int32,
         Float64,
@@ -48,7 +50,7 @@ namespace atomix {
 }
 
 
-namespace atomix::data_type_utils {
+export namespace atomix::data_type_utils {
     inline std::string data_type_to_string(const DataType dt) {
 
         switch (dt)
@@ -125,5 +127,3 @@ namespace atomix::data_type_utils {
 
 }
 
-
-#endif //DATATYPE_HH

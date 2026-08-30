@@ -4,13 +4,28 @@
 #include <vector>
 
 #include "../external/catch2/catch_amalgamated.hpp"
-#include "mem/mem_route.hpp"
-#include "mem/buffer.hpp"
+
+import atomix.mem;
+import atomix.config;
 namespace {
+
+    std::vector<atomix::mem::Buffer> create_buffers(const size_t byte_size){
+        std::vector<atomix::mem::Buffer> buffers1;
+        buffers1.reserve((byte_size / (atomix::mem::chunk_size)) + 1);
+
+        const size_t remainder = (byte_size % (atomix::mem::chunk_size));
+
+        for (size_t i = 0; i < byte_size / (atomix::mem::chunk_size); ++i) {
+            buffers1.push_back(atomix::mem::Buffer(atomix::mem::chunk_size, atomix::mem::default_alignment));
+        }
+        if (remainder != 0){
+            buffers1.push_back(atomix::mem::Buffer(remainder, atomix::mem::default_alignment));
+        }
+        return buffers1;
+    }
     void check_integrity(const size_t size) {
 
-        size_t chunk_size;
-        auto buffers = atomix::mem::mem_route::allocate(size, chunk_size, 64);
+        auto buffers = create_buffers(size);
 
         REQUIRE_FALSE(buffers.empty());
 
@@ -58,8 +73,8 @@ TEST_CASE("Buffer") {
     }
 
     SECTION("Destroying some buffers keeps the remaining ones valid"){
-        size_t chunk_size;
-        auto buffers = atomix::mem::mem_route::allocate(200 * kb, chunk_size, 64);
+
+        auto buffers = create_buffers(200 * atomix::units::KiB);
 
         REQUIRE(buffers.size() > 1);
 
@@ -76,8 +91,8 @@ TEST_CASE("Buffer") {
     }
 
     SECTION("Buffers can be released in arbitrary order") {
-        size_t chunk_size;
-        auto buffers = atomix::mem::mem_route::allocate(10*mb, chunk_size, 64);
+
+        auto buffers = create_buffers(10 * atomix::units::MiB);
 
         buffers.erase(buffers.begin() + 1);
         buffers.pop_back();

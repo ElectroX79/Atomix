@@ -1,5 +1,4 @@
-#ifndef DATA_TABLE_HPP
-#define DATA_TABLE_HPP
+module;
 
 #include <vector>
 #include <stdexcept>
@@ -9,56 +8,94 @@
 #include <cstdlib>
 
 
-#include "data_type.hpp"
-#include "mem/buffer.hpp"
-#include "security_check.hpp"
+export module atomix.data.data_table:core;
+import atomix.data.data_type;
+import atomix.mem;
+import atomix.bounds;
+import atomix.config;
 
 
-namespace atomix {
+namespace atomix::io {
+    class ParserCsv;
+}
 
-    namespace io {
-        class ParserCsv;
-    }
+export namespace atomix {
+
+
 
     class DataTable{
 
 #ifndef NDEBUG
         friend class DataTableTester;
 #endif
-
+        //TODO: Consider creating a proxy accessor instead of friend class/struct
         friend struct DataTablePrinter;
         friend class io::ParserCsv;
 
         struct ListMetadata{
-            std::vector<uint32_t> offsets;
+            std::vector<uint32_t> offsets = {};
             uint32_t last_used_byte;
         };
 
         struct Column {
             std::string name;
-            std::vector <mem::Buffer> buffers;
+            std::vector<mem::Buffer> buffers;
             std::vector<ListMetadata> list_metadata;
             size_t n_elements;
-            size_t chunk_size; // 0 if it's not chunked (if chunk_size == 0 -> vector<shared_ptr<buffer>>.size() <= 1)
             DataType type = DataType::Undefined;
             DataType variable_type; //CANNOT BE LIST. Also, if type != DataType::List, then variable_type == DataType::Undefined
 
-            Column(std::string&& name1,
-                std::vector<mem::Buffer>&& buffer1,
-                std::vector<ListMetadata>&& list_metadata1,
-                const size_t n_elements1,
-                const size_t chunk_size1,
-                const DataType type1,
-                const DataType variable_type1
-                ):
-            name(std::move(name1)),
-            buffers(std::move(buffer1)),
-            list_metadata(std::move(list_metadata1)),
-            n_elements(n_elements1),
-            chunk_size(chunk_size1),
-            type(type1),
-            variable_type(variable_type1)
-            {}
+
+            static std::vector<mem::Buffer> create_buffers(const size_t byte_size){
+                std::vector<mem::Buffer> buffers1;
+                buffers1.reserve((byte_size / (mem::chunk_size)) + 1);
+
+                const size_t remainder = (byte_size % (mem::chunk_size));
+
+                for (size_t i = 0; i < byte_size / (mem::chunk_size); ++i) {
+                    buffers1.push_back(mem::Buffer(mem::chunk_size, mem::default_alignment));
+                }
+                if (remainder != 0){
+                    buffers1.push_back(mem::Buffer(remainder, mem::default_alignment));
+                }
+                return buffers1;
+            }
+
+
+            template <DataType DT1, DataType DT2 = DataType::Undefined>
+            static Column create_column(std::string&& name1,const size_t byte_size){
+                Column column;
+                column.buffers = create_buffers(byte_size);
+
+                if constexpr (DT1 == DataType::List && DT2 == DataType::Undefined) {
+                    std::cerr << "Contract violation: DataType::List requires a variable type" << "\n";
+                    std::abort();
+                }
+
+                if constexpr (DT1 != DataType::List && DT2 != DataType::Undefined) {
+                    std::cerr << "Contract violation: Only dataType::List can have a variable type" << "\n";
+                    std::abort();
+                }
+
+                if constexpr (DT1 != DataType::List) {
+                    column.name = std::move(name1);
+                    column.type = DT1;
+                    column.variable_type = DataType::Undefined;
+                    column.n_elements = byte_size/data_type_utils::byte_size_fixed(DT1);
+                    column.list_metadata.clear();
+
+                }
+                else {
+                    column.name = std::move(name1);
+                    column.type = DT1;
+                    column.variable_type = DT2;
+                    column.n_elements = 0;// undefined, define manually
+                    column.list_metadata = std::vector<ListMetadata>(column.buffers.size()); //it needs to be initialized
+                }
+
+                return column;
+            }
+
         };
 
 
@@ -78,17 +115,11 @@ namespace atomix {
         **/
         void get_buffer_pos(const size_t col_index, const size_t offset, size_t& buffer_index, size_t& remainder)const{
             if (columns_[col_index].type != DataType::List) {
-                const size_t chunk_size = columns_[col_index].chunk_size;
                 const size_t byte_size = data_type_utils::byte_size_fixed(columns_[col_index].type);
 
-                if (chunk_size == 0) {
-                    buffer_index = 0;
-                    remainder = offset* byte_size ;
-                    return;
-                }
 
-                buffer_index = offset* byte_size  / chunk_size;
-                remainder = offset* byte_size  % chunk_size;
+                buffer_index = offset* byte_size  / mem::chunk_size;
+                remainder = offset* byte_size  % mem::chunk_size;
             }
             else {
                 throw std::logic_error("List support not implemented yet for get_buffer_pos()");
@@ -102,16 +133,10 @@ namespace atomix {
 
             if constexpr(DT != DataType::List) {
                 using T = type_of_t<DT>;
-                const size_t chunk_size = columns_[col_index].chunk_size;
 
-                if (chunk_size == 0) {
-                    buffer_index = 0;
-                    remainder = offset*sizeof(T);
-                    return;
-                }
 
-                buffer_index = offset*sizeof(T) / chunk_size;
-                remainder = offset*sizeof(T)  % chunk_size;
+                buffer_index = offset*sizeof(T) / mem::chunk_size;
+                remainder = offset*sizeof(T)  % mem::chunk_size;
             }
             else {
                 throw std::logic_error("List support not implemented yet for get_buffer_pos()");
@@ -254,4 +279,3 @@ namespace atomix {
 }
 
 
-#endif 

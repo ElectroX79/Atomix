@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-cmake -B build
+cmake -B build -G Ninja
 cmake --build build --target mem_route_benchmark
 #GitHub workflow do not allow to change the perf_event_paranoid
 #perf_flags="cache-misses,cycles,minor-faults,major-faults"

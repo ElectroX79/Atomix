@@ -1,12 +1,11 @@
-#ifndef BUFFER_HPP
-#define BUFFER_HPP
-
+module;
 #include <cstdint>
+#include <cstddef>
 
-#include "allocation_type.hpp"
+export module atomix.mem.buffer;
+import atomix.mem.allocation_type;
 
-
-namespace atomix::mem {
+export namespace atomix::mem {
     class Buffer {
 
     private:
@@ -18,6 +17,8 @@ namespace atomix::mem {
     public:
 
         Buffer(uint8_t* begin, const size_t size, const AllocationType alloc_t): begin_(begin), size_(size), alloc_t_(alloc_t) {}
+
+        Buffer(size_t size, size_t alignment);
 
         Buffer(const Buffer& other) noexcept;
         Buffer& operator=(const Buffer& other) noexcept;
@@ -60,5 +61,4 @@ namespace atomix::mem {
 
 
 
-#endif
 

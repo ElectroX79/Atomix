@@ -1,12 +1,19 @@
-
-#include "../include/mem/buffer.hpp"
-
+module;
 #include <cstring>
+#include <cstddef>
 
-#include "../include/mem/mem_route.hpp"
-
+module atomix.mem.buffer;
+import atomix.mem.mem_route;
+import atomix.config;
 
 namespace atomix::mem {
+
+    Buffer::Buffer(size_t size, size_t alignment = default_alignment) {
+        const auto info = mem_route::allocate(size, alignment);
+        begin_ = info.ptr;
+        size_ = info.size;
+        alloc_t_ = info.alloc_t;
+    }
 
     //Destructor
     Buffer::~Buffer() {
@@ -15,15 +22,21 @@ namespace atomix::mem {
 
 
     //Copy
-    Buffer::Buffer(const Buffer& other)noexcept:
-        Buffer(mem_route::allocate_buffer(other.size_, other.alloc_t_)){
+    Buffer::Buffer(const Buffer& other)noexcept{
+        const auto info = mem_route::allocate(other.size_, default_alignment);
+        begin_ = info.ptr;
+        size_ = info.size;
+        alloc_t_ = info.alloc_t;
         memcpy(begin_, other.begin_, other.size_);
     }
 
     Buffer& Buffer::operator=(const Buffer& other) noexcept {
         if (this != &other) {
             mem_route::deallocate(begin_, alloc_t_);
-            *this = mem_route::allocate_buffer(other.size_, other.alloc_t_);
+            const auto info = mem_route::allocate(other.size_, default_alignment);
+            begin_ = info.ptr;
+            size_ = info.size;
+            alloc_t_ = info.alloc_t;
             memcpy(begin_, other.begin_, other.size_);
         }
         return *this;

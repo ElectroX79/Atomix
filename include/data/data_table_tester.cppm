@@ -1,8 +1,5 @@
+module;
 #ifndef NDEBUG
-
-
-#ifndef TABULAR_DATA_TESTER_HPP
-#define TABULAR_DATA_TESTER_HPP
 
 #include <vector>
 #include <memory>
@@ -10,15 +7,18 @@
 #include <cstring>
 #include <string>
 #include <cassert>
+#include <iostream>
+#include <cstdlib>
+#include <span>
 
 
-#include "../include/data/data_table.hpp"
-#include "../include/data/data_type.hpp"
-#include "mem/mem_route.hpp"
-#include "mem/buffer.hpp"
+export module atomix.data.data_table:tester;
+import :core;
+import atomix.data.data_type;
+import atomix.mem;
+import atomix.config;
 
-
-namespace atomix {
+export namespace atomix {
     class DataTableTester{
     public:
 
@@ -54,18 +54,15 @@ namespace atomix {
             }
 
 
-            const size_t byte_size = data_type_utils::byte_size_fixed(DT1);
-            size_t chunk_size;
-            std::vector<mem::Buffer> buffers = mem::mem_route::allocate(v.size() * byte_size, chunk_size, 64);
+            DataTable::Column column = DataTable::Column::create_column <DT1, DataType::Undefined>(std::move(name), v.size() * sizeof(type_of_t<DT1>));
 
             size_t acc = 0;
-            for (const auto& buffer : buffers) {
+            for (const auto& buffer : column.buffers) {
                 memcpy(buffer.get_begin(),(reinterpret_cast<const uint8_t*> (v.data()) + acc), buffer.get_size());
                 acc += buffer.get_size();
             }
-            assert(acc == v.size() * byte_size);
+            assert(acc == v.size() * sizeof(type_of_t<DT1>));
             std::vector<DataTable::ListMetadata> list_metadata{};
-            const DataTable::Column column(std::move(name), std::move (buffers), std::move(list_metadata), v.size(), chunk_size, DT1, DataType::Undefined);
             td.columns_.push_back(column);
 
         }
@@ -85,7 +82,7 @@ namespace atomix {
          * @note Does nothing if @p sp is empty. Aborts on contract violations.
          */
         template <DataType DT1, DataType DT2, typename T>
-        static void artificial_append_variable(DataTable& td, const std::span<T> sp, std::string name, const std::vector<uint32_t> elements_size) {
+        static void artificial_append_variable(DataTable& td, const std::span<T> sp, std::string&& name, const std::vector<uint32_t>& elements_size) {
             if (sp.empty()) {
                 return;
             }
@@ -100,14 +97,11 @@ namespace atomix {
                 std::abort();
             }
 
-            constexpr size_t kb = 1024;
-            constexpr uint64_t chunk_size_aux = 64 * kb; //hardcoded, see mem_route as reference
-
             std::vector<DataTable::ListMetadata> aux_offsets{{std::vector<uint32_t>{0}, 0}};
 
             size_t acc = 0;
             for (const auto& element_size : elements_size) {
-                if (acc + element_size > chunk_size_aux) {
+                if (acc + element_size > mem::chunk_size) {
                     aux_offsets.back().last_used_byte = acc;
                     aux_offsets.push_back({std::vector<uint32_t>{0}, 0});
                     acc = 0;
@@ -118,26 +112,21 @@ namespace atomix {
             aux_offsets.back().last_used_byte = acc;
 
 
+            const size_t total_size = (aux_offsets.size() - 1) * mem::chunk_size + acc;
+            DataTable::Column column = DataTable::Column::create_column <DT1, DT2>(std::move(name), total_size);
 
 
-            size_t chunk_size;
-            const size_t total_size = (aux_offsets.size() - 1) * chunk_size_aux + acc;
-
-            std::vector<mem::Buffer> buffers = mem::mem_route::allocate(total_size, chunk_size, 64);
+            column.n_elements = elements_size.size();
 
             size_t acc2 = 0;
             for (size_t i = 0; i < aux_offsets.size(); ++i) {
-                memcpy(buffers[i].get_begin(), reinterpret_cast<uint8_t*>(sp.data()) + acc2, aux_offsets[i].last_used_byte );
+                memcpy(column.buffers[i].get_begin(), reinterpret_cast<uint8_t*>(sp.data()) + acc2, aux_offsets[i].last_used_byte );
                 acc2 += aux_offsets[i].last_used_byte;
             }
             assert(acc2 == sp.size_bytes());
 
-            const DataTable::Column column( std::move(name),
-                                            std::move(buffers),
-                                            std::move(aux_offsets),
-                                            elements_size.size(), chunk_size,
-                                            DT1,
-                                            DT2);
+            column.list_metadata = std::move(aux_offsets);
+
             td.columns_.push_back(std::move(column));
         }
 
@@ -151,8 +140,5 @@ namespace atomix {
 
 
 
-
-
-#endif //TABULAR_DATA_TESTER_HPP
 
 #endif//NDEBUG
