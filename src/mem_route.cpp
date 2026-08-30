@@ -3,11 +3,9 @@ module;
 #include <vector>
 #include <memory>
 #include <iostream>
-#include "cassert"
 
 module atomix.mem.mem_route;
 
-import atomix.mem.buffer;
 import atomix.mem.allocation_type;
 import atomix.mem.aligned_allocator;
 import atomix.bounds;
