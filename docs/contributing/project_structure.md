@@ -13,4 +13,5 @@ Atomix/
 ├── scripts/            # Scripts
 ├── docs/               # Documentation
 ```
+<!-- TODO: add dependecies graph and explain it-->
 
