@@ -10,10 +10,8 @@ and optimize the memory allocation strategy depending on the size of the allocat
 `Mem_route` currently uses two allocation strategies:
 
 - **Small allocations:** use [Aligned allocator](aligned_allocator.md).
-- **Larger allocations:** use aligned allocation with 64 KiB chunking.
+- **Larger allocations:** In future it could use a [Custom Allocator](../../future_features/proposals/custom_allocator.md) 
 
-The caller receives a vector of `Buffer` (just one if the allocation is small), and
-the size of each chunk (0 if it is not chunked).
 
 ## Why a routing layer?
 
@@ -23,7 +21,7 @@ use memory.
 For example:
 
 ```text
-             DataTable
+              Column
                  |
                  v
               Buffer
