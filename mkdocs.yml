@@ -44,6 +44,7 @@ nav:
       - ADR-0002: adr/adr-0002-chunked_column_storage.md
       - ADR-0003: adr/adr-0003-removal_vmem_chunk.md
       - ADR-0004: adr/adr-0004-removal_of_cow.md
+      - ADR-0005: adr/adr-0005-transform-colum-buffer-mem_route.md
   - Benchmarks:
     - Memory allocation strategies: benchmarks/memory_allocation_performance.md
     - Buffer Ownership and Copy Performance: benchmarks/cow_buffer_ownership.md
