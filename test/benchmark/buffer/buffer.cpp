@@ -2,6 +2,24 @@
 #include "../external/catch2/catch_amalgamated.hpp"
 
 import atomix.mem;
+import atomix.config;
+
+namespace {
+    std::vector<atomix::mem::Buffer> create_buffers(const size_t byte_size){
+        std::vector<atomix::mem::Buffer> buffers1;
+        buffers1.reserve((byte_size / (atomix::mem::chunk_size)) + 1);
+
+        const size_t remainder = (byte_size % (atomix::mem::chunk_size));
+
+        for (size_t i = 0; i < byte_size / (atomix::mem::chunk_size); ++i) {
+            buffers1.push_back(atomix::mem::Buffer(atomix::mem::chunk_size, atomix::mem::default_alignment));
+        }
+        if (remainder != 0){
+            buffers1.push_back(atomix::mem::Buffer(remainder, atomix::mem::default_alignment));
+        }
+        return buffers1;
+    }
+}
 
 //Note: BENCHMARK in Catch2 repeats the same operation 100 times
 
@@ -10,8 +28,7 @@ TEST_CASE("Creation and destruction", "[buffer]") {
     BENCHMARK("Creation and destruction (RAII) ") {
         constexpr size_t repeat = 1000;
         for (size_t i = 0; i < repeat; i++) {
-            size_t chunk_size;
-            const std::vector<atomix::mem::Buffer> buffers = atomix::mem::mem_route::allocate(1024, chunk_size, 64);
+            const std::vector<atomix::mem::Buffer> buffers =  create_buffers(atomix::units::KiB);
         }
     };
 
@@ -20,7 +37,8 @@ TEST_CASE("Creation and destruction", "[buffer]") {
 
 TEST_CASE("Copying", "[buffer]") {
     size_t chunk_size;
-    const std::vector<atomix::mem::Buffer> buffers = atomix::mem::mem_route::allocate(1*1024*1024, chunk_size, 64);
+
+    const std::vector<atomix::mem::Buffer> buffers = create_buffers(atomix::units::MiB);
     std::vector<atomix::mem::Buffer> buffers_dest;
     buffers_dest.reserve(buffers.size());
 
@@ -39,8 +57,7 @@ TEST_CASE("Copying", "[buffer]") {
 
 
 TEST_CASE("Moving", "[buffer]") {
-    size_t chunk_size;
-    std::vector<atomix::mem::Buffer> buffers = atomix::mem::mem_route::allocate(1*1024*1024, chunk_size, 64);
+    std::vector<atomix::mem::Buffer> buffers = create_buffers(atomix::units::MiB);
     std::vector<atomix::mem::Buffer> buffers_dest;
     buffers_dest.reserve(buffers.size());
 
@@ -64,8 +81,7 @@ TEST_CASE("Moving", "[buffer]") {
 
 
 TEST_CASE("Accessing", "[buffer]") {
-    size_t chunk_size;
-    const std::vector<atomix::mem::Buffer> buffers = atomix::mem::mem_route::allocate(1*1024*1024, chunk_size, 64);
+    std::vector<atomix::mem::Buffer> buffers = create_buffers(atomix::units::MiB);
 
     for (auto& buffer : buffers) {
         memset(buffer.get_begin(), 0xAB, buffer.get_size());
