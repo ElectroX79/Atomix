@@ -22,10 +22,8 @@ jobs:
           gcc-16 --version
           g++-16 --version
 
-
-      - name: Run test script
-      env:
-        CC: gcc-16
-        CXX: g++-16
-      run: bash ./scripts/workflow/global_benchmark.sh
-
+      - name: Run benchmark script
+        env:
+          CC: gcc-16
+          CXX: g++-16
+        run: bash ./scripts/workflow/global_benchmark.sh
