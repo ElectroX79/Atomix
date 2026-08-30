@@ -4,7 +4,6 @@ module;
 #include <cstdint>
 
 export module atomix.mem.mem_route;
-import atomix.mem.buffer;
 import atomix.mem.allocation_type;
 import atomix.config;
 
