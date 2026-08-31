@@ -53,10 +53,10 @@ export namespace atomix {
                 const size_t remainder = (byte_size % (mem::chunk_size));
 
                 for (size_t i = 0; i < byte_size / (mem::chunk_size); ++i) {
-                    buffers1.push_back(mem::Buffer(mem::chunk_size, mem::default_alignment));
+                    buffers1.emplace_back(mem::chunk_size, mem::default_alignment);
                 }
                 if (remainder != 0){
-                    buffers1.push_back(mem::Buffer(remainder, mem::default_alignment));
+                    buffers1.emplace_back(remainder, mem::default_alignment);
                 }
                 return buffers1;
             }
