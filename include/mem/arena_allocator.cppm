@@ -21,7 +21,7 @@ namespace atomix::mem {
         struct Arena {
             uint8_t* begin;
             size_t size = arena_allocator::arena_size;
-            uint64_t mask[arena_allocator::arena_size/(arena_allocator::chunk_size * sizeof(uint64_t))];
+            uint64_t mask[arena_allocator::arena_size/(arena_allocator::chunk_size * 8 * sizeof(uint64_t))];
 
             Arena(){
                 begin = vmem::allocate(arena_allocator::arena_size);
