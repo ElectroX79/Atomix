@@ -34,7 +34,7 @@ export namespace atomix{
 
                         switch (dt.column_datatype(i)) {
                             case DataType::Bool:
-                                std::cout << (buffer.get_begin()[k] == 0 ? "false" : "true") << " ";
+                                std::cout << (static_cast<uint8_t>(buffer.get_begin()[k])== 0 ? "false" : "true") << " ";
                                 break;
 
                             case DataType::Int32:

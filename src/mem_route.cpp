@@ -47,7 +47,7 @@ namespace atomix::mem::mem_route{
     }
 
 
-    void deallocate(uint8_t* ptr, const AllocationType alloc_t) {
+    void deallocate(std::byte* ptr, const AllocationType alloc_t) {
         switch (alloc_t) {
 
             case AllocationType::aligned_alloc:

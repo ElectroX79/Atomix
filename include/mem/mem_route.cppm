@@ -11,13 +11,13 @@ import atomix.config;
 
 export namespace atomix::mem{
      struct AllocInfo {
-        uint8_t* ptr;
+        std::byte* ptr;
         size_t size;
         AllocationType alloc_t;
     };
 
     /*
-    enum class CopyType: uint8_t {
+    enum class CopyType: std::byte {
         Deep,
         Shallow,
         Reinitialize
@@ -29,7 +29,7 @@ export namespace atomix::mem{
         // Future change: custom allocator, see documentation
 
         [[nodiscard]] AllocInfo allocate( size_t size, size_t alignment = default_alignment);
-        void deallocate(uint8_t* ptr, AllocationType alloc_t);
+        void deallocate(std::byte* ptr, AllocationType alloc_t);
 
     }
 
