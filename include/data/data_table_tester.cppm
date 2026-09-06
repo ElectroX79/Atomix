@@ -58,7 +58,7 @@ export namespace atomix {
 
             size_t acc = 0;
             for (const auto& buffer : column.buffers) {
-                memcpy(buffer.get_begin(),(reinterpret_cast<const uint8_t*> (v.data()) + acc), buffer.get_size());
+                memcpy(buffer.get_begin(),(reinterpret_cast<const std::byte*> (v.data()) + acc), buffer.get_size());
                 acc += buffer.get_size();
             }
             assert(acc == v.size() * sizeof(type_of_t<DT1>));
@@ -120,7 +120,7 @@ export namespace atomix {
 
             size_t acc2 = 0;
             for (size_t i = 0; i < aux_offsets.size(); ++i) {
-                memcpy(column.buffers[i].get_begin(), reinterpret_cast<uint8_t*>(sp.data()) + acc2, aux_offsets[i].last_used_byte );
+                memcpy(column.buffers[i].get_begin(), reinterpret_cast<std::byte*>(sp.data()) + acc2, aux_offsets[i].last_used_byte );
                 acc2 += aux_offsets[i].last_used_byte;
             }
             assert(acc2 == sp.size_bytes());

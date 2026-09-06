@@ -9,14 +9,14 @@ export namespace atomix::mem {
     class Buffer {
 
     private:
-        uint8_t* begin_ = nullptr;
+        std::byte* begin_ = nullptr;
         size_t size_ = 0;
         AllocationType alloc_t_ = AllocationType::none;
 
 
     public:
 
-        Buffer(uint8_t* begin, const size_t size, const AllocationType alloc_t): begin_(begin), size_(size), alloc_t_(alloc_t) {}
+        Buffer(std::byte* begin, const size_t size, const AllocationType alloc_t): begin_(begin), size_(size), alloc_t_(alloc_t) {}
 
         Buffer(size_t size, size_t alignment);
 
@@ -28,7 +28,7 @@ export namespace atomix::mem {
 
 
 
-        [[nodiscard]] uint8_t* get_begin() const{
+        [[nodiscard]] std::byte* get_begin() const{
             return begin_;
         }
 

@@ -2,17 +2,18 @@ module;
 #include <cstdint>
 #include <stdexcept>
 #include <system_error>
+#include <cstddef>
 
 export module atomix.mem.aligned_allocator;
 
 
 export namespace atomix::mem::aligned_allocator{
 
-    [[nodiscard]]inline uint8_t* allocate(const size_t size, const size_t alignment = 64) {
+    [[nodiscard]]inline std::byte* allocate(const size_t size, const size_t alignment = 64) {
 
         const size_t real_size = ((size + alignment - 1) / alignment) * alignment;
 
-        const auto ptr = static_cast<uint8_t *>(aligned_alloc(alignment, real_size));
+        const auto ptr = static_cast<std::byte *>(aligned_alloc(alignment, real_size));
 
         if (ptr == nullptr) {
             if (errno == ENOMEM) {
@@ -27,7 +28,7 @@ export namespace atomix::mem::aligned_allocator{
         return ptr;
     }
 
-    inline void deallocate (uint8_t* ptr) {
+    inline void deallocate (std::byte* ptr) {
         if (ptr == nullptr) {
             throw std::invalid_argument("The pointer cannot be nullptr");
         }
