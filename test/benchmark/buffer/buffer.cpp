@@ -28,7 +28,7 @@ TEST_CASE("Creation and destruction", "[buffer]") {
     BENCHMARK("Creation and destruction (RAII) ") {
         constexpr size_t repeat = 1000;
         for (size_t i = 0; i < repeat; i++) {
-            const std::vector<atomix::mem::Buffer> buffers =  create_buffers(atomix::units::KiB);
+            const std::vector<atomix::mem::Buffer> buffers =  create_buffers(atomix::KiB);
         }
     };
 
@@ -38,7 +38,7 @@ TEST_CASE("Creation and destruction", "[buffer]") {
 TEST_CASE("Copying", "[buffer]") {
     size_t chunk_size;
 
-    const std::vector<atomix::mem::Buffer> buffers = create_buffers(atomix::units::MiB);
+    const std::vector<atomix::mem::Buffer> buffers = create_buffers(atomix::MiB);
     std::vector<atomix::mem::Buffer> buffers_dest;
     buffers_dest.reserve(buffers.size());
 
@@ -57,7 +57,7 @@ TEST_CASE("Copying", "[buffer]") {
 
 
 TEST_CASE("Moving", "[buffer]") {
-    std::vector<atomix::mem::Buffer> buffers = create_buffers(atomix::units::MiB);
+    std::vector<atomix::mem::Buffer> buffers = create_buffers(atomix::MiB);
     std::vector<atomix::mem::Buffer> buffers_dest;
     buffers_dest.reserve(buffers.size());
 
@@ -81,7 +81,7 @@ TEST_CASE("Moving", "[buffer]") {
 
 
 TEST_CASE("Accessing", "[buffer]") {
-    std::vector<atomix::mem::Buffer> buffers = create_buffers(atomix::units::MiB);
+    std::vector<atomix::mem::Buffer> buffers = create_buffers(atomix::MiB);
 
     for (auto& buffer : buffers) {
         memset(buffer.get_begin(), 0xAB, buffer.get_size());
@@ -92,7 +92,7 @@ TEST_CASE("Accessing", "[buffer]") {
         constexpr size_t repeat = 1000;
         for (size_t i = 0; i < repeat; i++) {
             for (auto& buffer : buffers) {
-                for (size_t i = 0; i < buffer.get_size(); i+=4) {
+                for (size_t j = 0; j < buffer.get_size(); j+=4) {
                     uint32_t temp;
                     std::memcpy(&temp, buffer.get_begin() + i,  sizeof(uint32_t));
                     acc += temp;

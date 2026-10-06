@@ -9,8 +9,8 @@
 import atomix.data;
 import atomix.mem;
 
-
-
+//deprecated
+/*
 namespace {
     atomix::DataTable make_three_column_table(const size_t multiplier) {
 
@@ -53,7 +53,7 @@ namespace {
         }
     }
 }
-
+*/
 
 TEST_CASE("Small size, alloc + dealloc", "[mult_256][alloc + dealloc]") {
     constexpr size_t mult = 256;
