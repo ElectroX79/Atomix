@@ -28,10 +28,7 @@ export namespace atomix::mem::aligned_allocator{
         return ptr;
     }
 
-    inline void deallocate (std::byte* ptr) {
-        if (ptr == nullptr) {
-            throw std::invalid_argument("The pointer cannot be nullptr");
-        }
+    inline void deallocate (std::byte* ptr)noexcept {
         free(reinterpret_cast<void*>(ptr));
     }
 
