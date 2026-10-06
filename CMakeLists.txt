@@ -29,7 +29,6 @@ function(create_atomix_core target)
     target_sources(${target}
             PRIVATE
                 ${PROJECT_SOURCE_DIR}/src/mem_route.cpp
-                ${PROJECT_SOURCE_DIR}/src/data_table.cpp
                 ${PROJECT_SOURCE_DIR}/src/buffer.cpp
 
             PUBLIC
@@ -93,12 +92,13 @@ create_test_instance(mem_route_benchmark test/benchmark/mem_route/mem_route_benc
 create_test_instance(buffer_benchmark test/benchmark/buffer/buffer.cpp AtomixCore)
 
 
+
 #executable example1
-create_program(example1 test/component_test/example/example1.cpp AtomixCoreSanitized)
+create_program(example1 demos/example1.cpp AtomixCoreSanitized)
 enable_sanitizers(example1)
 
 #executable example1
-create_program(example2 test/component_test/example/example2.cpp AtomixCoreSanitized)
+create_program(example2 demos/example2.cpp AtomixCoreSanitized)
 enable_sanitizers(example2)
 
 
