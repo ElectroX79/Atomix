@@ -17,7 +17,7 @@ import atomix.bounds;
 export namespace atomix {
 
     using mask_t = uint64_t;
-    constexpr size_t mask_bits = sizeof(mask_t) * 8;
+    constexpr size_t mask_t_bits = sizeof(mask_t) * 8;
 
     struct BitPos {
         size_t index;
@@ -27,20 +27,20 @@ export namespace atomix {
             : index(index1), bit(bit1) {}
 
         [[nodiscard]] constexpr size_t to_abs() const {
-            return index * mask_bits + bit;
+            return index * mask_t_bits + bit;
         }
 
         static constexpr BitPos abs_to_pos(const size_t abs_index) {
             return BitPos{
-                abs_index / mask_bits,
-                abs_index % mask_bits
+                abs_index / mask_t_bits,
+                abs_index % mask_t_bits
             };
         }
 
         BitPos& operator+=(const size_t n) {
             bit += n;
-            index += bit / mask_bits;
-            bit %= mask_bits;
+            index += bit / mask_t_bits;
+            bit %= mask_t_bits;
             return *this;
         }
 
@@ -58,8 +58,8 @@ export namespace atomix {
             }
 
             const size_t total = current - n;
-            index = total / mask_bits;
-            bit = total % mask_bits;
+            index = total / mask_t_bits;
+            bit = total % mask_t_bits;
             return *this;
         }
 
@@ -77,10 +77,10 @@ export namespace atomix {
         }
 
         std::strong_ordering operator<=>(const size_t other) const {
-            if (const auto cmp = index <=> other / mask_bits; cmp != 0)
+            if (const auto cmp = index <=> other / mask_t_bits; cmp != 0)
                 return cmp;
 
-            return bit <=> (other % mask_bits);
+            return bit <=> (other % mask_t_bits);
         }
     };
 
@@ -91,12 +91,15 @@ export namespace atomix {
         size_t abs_size = 0;
 
 
+
+
+
         public:
 
         BitMask() = default;
         explicit BitMask(const size_t size, const bool default_value) {
-            size_t resizing = size / mask_bits;
-            if (size % mask_bits != 0) resizing++;
+            size_t resizing = size / mask_t_bits;
+            if (size % mask_t_bits != 0) resizing++;
 
             mask_t real_value = 0;
             if (default_value) {
@@ -108,14 +111,19 @@ export namespace atomix {
             abs_size = size;
             n_ones_ = size * static_cast<size_t>(default_value);
 
+            if (default_value && (size % mask_t_bits != 0)) {
+                const size_t rem = size % mask_t_bits;
+                mask_.back() &= ~((std::numeric_limits<mask_t>::max()) << rem);
+            }
+
         }
 
         void push_back(const bool value) {
             const size_t index = abs_size;
             abs_size++;
 
-            const size_t word_index = index / mask_bits;
-            [[maybe_unused]]const size_t bit_offset = index % mask_bits;
+            const size_t word_index = index / mask_t_bits;
+            [[maybe_unused]]const size_t bit_offset = index % mask_t_bits;
 
 
             if (word_index >= mask_.size()) {
@@ -124,7 +132,6 @@ export namespace atomix {
 
             this->set(index, value);
 
-            if (value) n_ones_++;
         }
 
 
@@ -157,11 +164,11 @@ export namespace atomix {
 
 
         static constexpr size_t to_bits(const BitPos b_pos) {
-            return b_pos.index * n_bits_byte + b_pos.bit;
+            return b_pos.index * mask_t_bits + b_pos.bit;
         }
 
         static constexpr BitPos to_bit_pos(const size_t n_bit){
-            return BitPos{n_bit / n_bits_byte, n_bit % n_bits_byte};
+            return BitPos{n_bit / mask_t_bits, n_bit % mask_t_bits};
         }
 
 
@@ -196,6 +203,7 @@ export namespace atomix {
             return (*this)[to_bit_pos(n_bit)];
         }
 
+
         [[nodiscard]]bool at(const BitPos bit_pos)const {
             bounds::check_index_individual(to_bits(bit_pos), abs_size);
             return mask_[bit_pos.index] & (1ULL << bit_pos.bit);
@@ -205,88 +213,98 @@ export namespace atomix {
             return at(to_bit_pos(n_bit));
         }
 
-        [[nodiscard]]std::optional<size_t> first_one() const{
-            if (mask_.empty()) return std::nullopt;;
 
-            for (size_t i = 0; i < mask_.size() - 1; ++i) {
-                const size_t n = std::countr_zero(mask_[i]);
-                if (n != mask_bits)
-                    return std::make_optional(
-                        to_bits({i,n})
-                    );
+        [[nodiscard]] std::optional<size_t> first_one() const {
+            if ( abs_size == 0 or n_ones_ == 0) return std::nullopt;
+
+            const size_t rem = to_bit_pos(abs_size).bit;
+
+            for (size_t i = 0; i < mask_.size(); ++i) {
+                mask_t word = mask_[i];
+                if (i == mask_.size() - 1 && rem != 0) {
+                    word &= ~((std::numeric_limits<mask_t>::max()) << rem);
+                }
+
+                if (word != 0) {
+                    const size_t bit = std::countr_zero(word);
+                    return to_bits({i, bit});
+                }
+
             }
-
-            const size_t n =
-                std::countr_zero(mask_[mask_.size() - 1]);
-
-            if (n + 1 <= to_bit_pos(abs_size).bit)
-                return std::make_optional(to_bits({mask_.size() - 1,n}));
 
             return std::nullopt;
 
         }
 
 
-        [[nodiscard]]std::optional<size_t> rfirst_one() const{
-            if (mask_.empty()) return std::nullopt;;
+        [[nodiscard]] std::optional<size_t> rfirst_one() const {
+            if ( abs_size == 0 or n_ones_ == 0) return std::nullopt;
 
-            const size_t n =
-               std::countl_zero(mask_[0]);
+            constexpr mask_t max_value = std::numeric_limits<mask_t>::max();
+            const size_t rem = to_bit_pos(abs_size).bit;
 
-            if (mask_.size() < to_bit_pos(abs_size).bit + n - 1)
-                return std::make_optional(to_bits({mask_.size() - 1,n}));
+            const mask_t tail_mask = (rem == 0) ? max_value : ~((max_value) << rem);
+
+            for (size_t i = mask_.size(); i > 0; --i) {
+                const size_t word_idx = i - 1;
+                mask_t word = mask_[word_idx];
+
+                if (word_idx == mask_.size() - 1) {
+                    word &= tail_mask;
+                }
 
 
-            for (size_t i = 1; i < mask_.size(); ++i) {
-                const size_t n = std::countl_zero(mask_[mask_.size() - i]);
-                if (n != mask_bits)
-                    return std::make_optional(
-                        to_bits({i,mask_bits - n})
-                    );
+                if (word != 0) {
+                    const size_t bit = (mask_t_bits - 1) - std::countl_zero(word);
+                    return to_bits({word_idx, bit});
+                }
             }
 
             return std::nullopt;
         }
 
 
-        [[nodiscard]]std::optional<size_t> first_zero()const {
-            if (mask_.empty()) return std::nullopt;;
+        [[nodiscard]] std::optional<size_t> first_zero() const {
+            if (abs_size == 0 or n_of_zeros() == 0) return std::nullopt;
 
-            for (size_t i = 0; i < mask_.size() - 1; ++i) {
-                const size_t n = std::countr_one(mask_[i]);
-                if (n != mask_bits)
-                    return std::make_optional(
-                        to_bits({i,n})
-                    );
+            const size_t rem = to_bit_pos(abs_size).bit;
+
+            for (size_t i = 0; i < mask_.size(); ++i) {
+                mask_t word = mask_[i];
+                if (i == mask_.size() - 1 && rem != 0) {
+                    word |= ((std::numeric_limits<mask_t>::max()) << rem);
+                }
+
+                if (word != std::numeric_limits<mask_t>::max()) {
+                    const size_t bit = std::countr_one(word);
+                    return to_bits({i, bit});
+                }
             }
-
-            const size_t n =
-                std::countr_one(mask_[mask_.size() - 1]);
-
-            if (n + 1 <= to_bit_pos(abs_size).bit)
-                return std::make_optional(to_bits({mask_.size() - 1,n}));
-
             return std::nullopt;
-
         }
 
 
         [[nodiscard]]std::optional<size_t> rfirst_zero() const{
-            if (mask_.empty()) return std::nullopt;;
+            if (abs_size == 0 or n_of_zeros() == 0) return std::nullopt;
 
-            const size_t n =
-               std::countl_one(mask_[0]);
+            constexpr mask_t max_value = std::numeric_limits<mask_t>::max();
+            const size_t rem = to_bit_pos(abs_size).bit;
 
-            if (mask_.size() < to_bit_pos(abs_size).bit + n - 1)
-                return std::make_optional(to_bits({mask_.size() - 1,n}));
+            const mask_t tail_mask = (rem == 0) ? 0 : ((max_value) << rem);
+
+            for (size_t i = mask_.size(); i > 0; --i) {
+                const size_t word_idx = i - 1;
+                mask_t word = mask_[word_idx];
+
+                if (word_idx == mask_.size() - 1) {
+                    word |= tail_mask;
+                }
 
 
-            for (size_t i = 1; i < mask_.size(); ++i) {
-                const size_t n = std::countl_one(mask_[mask_.size() - i]);
-                if (n != mask_bits)
-                    return std::make_optional(
-                        to_bits({i,mask_bits - n})
-                    );
+                if (word != max_value) {
+                    const size_t bit = (mask_t_bits - 1) - std::countl_one(word);
+                    return to_bits({word_idx, bit});
+                }
             }
 
             return std::nullopt;
@@ -312,11 +330,11 @@ export namespace atomix {
 
 
         void set_range(const BitPos start, const BitPos end, const bool value) {
-            //TODO: this have potential to be optimized
+            //TODO: this could potential to be optimized
             bounds::check_index_interval(to_bits(start), to_bits(end), abs_size);
 
             if (value) {
-                for (size_t i = to_bits(start); i <= to_bits(end); ++i) {
+                for (size_t i = to_bits(start); i < to_bits(end); ++i) {
                     const auto aux = to_bit_pos(i);
                     const auto original = mask_[aux.index];
                     mask_[aux.index] |= (1ULL << aux.bit);
@@ -325,7 +343,7 @@ export namespace atomix {
                 }
             }
             else{
-                for (size_t i = to_bits(start); i <= to_bits(end); ++i) {
+                for (size_t i = to_bits(start); i < to_bits(end); ++i) {
                     const auto aux = to_bit_pos(i);
                     const auto original = mask_[aux.index];
                     mask_[aux.index] &= ~(1ULL << aux.bit);
