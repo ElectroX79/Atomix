@@ -37,7 +37,7 @@ int main() {
 
 
     );
-    size_t n = 1; //variable
+    size_t n = 4096; //variable
     std::vector<int32_dt> int32_vec_rep{1, 2, 3, 4, 5};
     std::vector<float_dt> float64_vec_rep{1.1, 2.2, 3.3, 4.4, 5.5};
     std::vector<char_dt> char_vec_rep{'a', 'b', 'c', 'd', 'e'};

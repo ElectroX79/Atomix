@@ -1,5 +1,10 @@
 # Memory management
-
+> **Deprecated since ADR-0007**
+>
+> **Warning:** This page is partially deprecated and may be changed in the future.
+>
+> See  [ADR-0007](../../adr/adr-0007-persistence-ram-disk.md) for more details
+>
 Memory management is one of the core components of Atomix. It is not just an allocator, it is
 a module responsible for enabling an efficient and consistent data sharing, a predictable lifetime of the memory
 and a storage model for the entire engine.

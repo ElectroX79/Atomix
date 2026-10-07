@@ -35,7 +35,22 @@ Then build the project:
 cmake --build build
 ```
 
+## Demos
+**If you just want to run the demos and test the current API's:**
+
+Demos are located in the `demo` directory, you can build them with:
+
+```bash
+cmake --build build --target <demo-target>
+./build/<test-target>
+```
+
+Currently, there are two demos with the following targets (<demo-target>):
+- example1
+- example2
+
 ## Run the tests
+**If you want to run the tests**:
 
 After building the project, run the test suite:
 
@@ -45,6 +60,7 @@ cmake --build build --target <test-target>
 ```
 
 ## Run a benchmark test
+**To run a benchmark test:**
 
 Benchmarks can be built and run like other targets. The code itself is usually located in `test/benchmark`.
 
