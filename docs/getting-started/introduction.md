@@ -45,7 +45,8 @@ cmake --build build --target <demo-target>
 ./build/<test-target>
 ```
 
-Currently, there are two demos with the following targets (<demo-target>):
+Currently, there are two demos with the following targets (demo-target):
+
 - example1
 - example2
 

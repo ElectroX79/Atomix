@@ -6,7 +6,8 @@
 > 
 > See [ADR-0006](../../adr/adr-0006-batching.md) 
 > and [ADR-0007](../../adr/adr-0007-persistence-ram-disk.md) for more details
-> 
+
+
 A `Column` is the internal representation of a column in a `DataTable`.
 
 Its responsibility is to store values of a single data type together with the metadata required to manage them.
