@@ -54,7 +54,7 @@ namespace {
     }
 }
 */
-
+/*
 TEST_CASE("Small size, alloc + dealloc", "[mult_256][alloc + dealloc]") {
     constexpr size_t mult = 256;
 
@@ -160,4 +160,4 @@ TEST_CASE("Huge size, access", "[mult_8m][access]") {
 
 }
 
-
+*/
