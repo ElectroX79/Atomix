@@ -5,7 +5,9 @@
 >
 > See [ADR-0006](../../adr/adr-0006-batching.md)
 > and [ADR-0007](../../adr/adr-0007-persistence-ram-disk.md) for more details
->
+
+---
+
 > **Before continuing, make sure you understand [Column](column.md) and the architecture of the [Data Table](../../architecture/data_table.md).**
 
 A `DataTable` is a user-level storage abstraction in Atomix.
