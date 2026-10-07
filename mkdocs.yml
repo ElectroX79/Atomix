@@ -45,6 +45,9 @@ nav:
       - ADR-0003: adr/adr-0003-removal_vmem_chunk.md
       - ADR-0004: adr/adr-0004-removal_of_cow.md
       - ADR-0005: adr/adr-0005-transform-colum-buffer-mem_route.md
+      - ADR-0006: adr/adr-0006-batching.md
+      - ADR-0007: adr/adr-0007-persistence-ram-disk
+
   - Benchmarks:
     - Memory allocation strategies: benchmarks/memory_allocation_performance.md
     - Buffer Ownership and Copy Performance: benchmarks/cow_buffer_ownership.md

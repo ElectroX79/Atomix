@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_compile_options(-march=native -Wall -Wextra -g -O2)
+add_compile_options(-march=native -Wall -Wextra -g -O2 -Wno-maybe-uninitialized)
 
 file(GLOB_RECURSE ATOMIX_MODULES CONFIGURE_DEPENDS
         "${PROJECT_SOURCE_DIR}/include/*.cppm"
@@ -29,7 +29,6 @@ function(create_atomix_core target)
     target_sources(${target}
             PRIVATE
                 ${PROJECT_SOURCE_DIR}/src/mem_route.cpp
-                ${PROJECT_SOURCE_DIR}/src/data_table.cpp
                 ${PROJECT_SOURCE_DIR}/src/buffer.cpp
 
             PUBLIC
@@ -54,6 +53,15 @@ function(create_test_instance target target_source libraries)
 
 endfunction()
 
+function(create_program target target_source libraries)
+    add_executable(${target}
+            ${target_source}
+    )
+    target_include_directories(${target} PRIVATE ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/external/catch2)
+    target_link_libraries(${target} PRIVATE ${libraries})
+
+endfunction()
+
 
 #Library AtomixCore
 create_atomix_core(AtomixCore)
@@ -63,7 +71,7 @@ create_atomix_core(AtomixCoreSanitized)
 enable_sanitizers(AtomixCoreSanitized)
 
 
-#executable data_table_test_
+#executable data_table_test_ NEEDS REFACTOR
 create_test_instance(data_table_test test/component_test/data_table_test.cpp AtomixCoreSanitized)
 enable_sanitizers(data_table_test)
 
@@ -72,11 +80,27 @@ enable_sanitizers(data_table_test)
 create_test_instance(mem_route_test test/component_test/mem_route_test.cpp AtomixCoreSanitized)
 enable_sanitizers(mem_route_test)
 
+#executable bit_mask_test
+create_test_instance(bit_mask_test test/component_test/bit_mask_test.cpp AtomixCoreSanitized)
+enable_sanitizers(bit_mask_test)
 
-#executable mem_route_benchmark
+
+#executable mem_route_benchmark NEEDS REFACTOR
 create_test_instance(mem_route_benchmark test/benchmark/mem_route/mem_route_benchmark.cpp AtomixCore)
 
 #executable buffer_benchmark
 create_test_instance(buffer_benchmark test/benchmark/buffer/buffer.cpp AtomixCore)
+
+
+
+#executable example1
+create_program(example1 demos/example1.cpp AtomixCoreSanitized)
+enable_sanitizers(example1)
+
+#executable example1
+create_program(example2 demos/example2.cpp AtomixCoreSanitized)
+enable_sanitizers(example2)
+
+
 
 

@@ -12,7 +12,7 @@ export namespace atomix::io {
     class Reader {
     private:
         int fd_ = -1;
-        size_t size_;
+        size_t size_ = 0;
         uint8_t* begin_ = nullptr;
 
 
@@ -21,7 +21,11 @@ export namespace atomix::io {
 
         Reader(const Reader&) = delete;
         Reader& operator=(const Reader&) = delete;
-        Reader(Reader&& other)noexcept: fd_(other.fd_), size_(other.size_), begin_(other.begin_) {}
+        Reader(Reader&& other)noexcept: fd_(other.fd_), size_(other.size_), begin_(other.begin_) {
+            other.fd_ = -1;
+            other.size_ = 0;
+            other.begin_ = nullptr;
+        }
         Reader& operator=(Reader&& other)noexcept{
             if (this != &other) {
                 munmap(static_cast<void*>(begin_), size_);
@@ -52,8 +56,8 @@ export namespace atomix::io {
          * closing the temporal token (file descriptor) and liberating the mapped pages.
          */
         ~Reader(){
-            munmap(static_cast<void*>(begin_), size_);
-            close(fd_);
+            if (begin_!= nullptr) munmap(static_cast<void*>(begin_), size_);
+            if ( fd_ != -1) close(fd_);
         }
 
         int fd() const {

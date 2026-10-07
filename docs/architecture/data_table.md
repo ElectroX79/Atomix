@@ -1,5 +1,11 @@
 # Data table
-
+> **Deprecated since ADR-0006 and ADR-0007**
+>
+> **Warning:** This page is partially deprecated and may be changed in the future.
+>
+> See [ADR-0006](../../adr/adr-0006-batching.md)
+> and [ADR-0007](../../adr/adr-0007-persistence-ram-disk.md) for more details
+>
 A data table is a data structure that represents a relational database table which in atomix has the following properties:
 
 - Columnar layout
