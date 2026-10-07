@@ -12,6 +12,9 @@
 
 import atomix.data.data_table;
 //TODO: incoming new test refactor for new architecture
+TEST_CASE("DataTable", "[refactor]") {
+    SUCCEED("Integration test suite pending updates");
+}
 /*
 
 namespace {

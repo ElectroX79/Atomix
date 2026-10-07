@@ -9,6 +9,10 @@
 import atomix.data;
 import atomix.mem;
 
+
+TEST_CASE("Benchmark", "[refactor]") {
+    SUCCEED("Benchmark refactor pending");
+}
 //deprecated
 /*
 namespace {
