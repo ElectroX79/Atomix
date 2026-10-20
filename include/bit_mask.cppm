@@ -5,6 +5,7 @@ module;
 #include <optional>
 #include <limits>
 #include <bit>
+#include <cassert>
 #include <stdexcept>
 
 export module atomix.bit_mask;
@@ -171,6 +172,9 @@ export namespace atomix {
             return BitPos{n_bit / mask_t_bits, n_bit % mask_t_bits};
         }
 
+        [[nodiscard]]mask_t get_word(const size_t index)const {
+            return mask_[index];
+        }
 
 
 
@@ -194,9 +198,26 @@ export namespace atomix {
             abs_size = 0;
         }
 
+        [[nodiscard]]BitMask and_not(const BitMask& other) const {
+            if (this == &other) return BitMask (abs_size, false);;
+
+            assert(abs_size == other.abs_size);
+
+            BitMask result(abs_size, false);
+            result.n_ones_ = 0;
+
+            for (size_t i = 0; i < mask_.size(); ++i) {
+                result.mask_[i] = mask_[i] & (~other.mask_[i]);
+                result.n_ones_ += std::popcount(result.mask_[i]);
+            }
+
+            return result;
+        }
+
+
 
         [[nodiscard]] bool operator[](const BitPos bit_pos) const noexcept {
-            return mask_[bit_pos.index] & (1ULL << bit_pos.bit);
+            return (mask_[bit_pos.index] & (1ULL << bit_pos.bit)) != 0;
         }
 
         [[nodiscard]] bool operator[](const size_t n_bit) const noexcept {
@@ -212,6 +233,60 @@ export namespace atomix {
         [[nodiscard]]bool at(const size_t n_bit)const{
             return at(to_bit_pos(n_bit));
         }
+        
+        //TODO: optimize operator| and function and_not() with same optimization as operator&
+        [[nodiscard]]BitMask operator&(const BitMask& other) const {
+            if (this == &other) return *this;
+
+            assert(abs_size == other.abs_size);
+
+
+
+            BitMask result(abs_size, false);
+
+            const mask_t* __restrict__ this_mask_ = mask_.data();
+            const mask_t* __restrict__ other_mask_ = other.mask_.data();
+            mask_t* __restrict__ result_mask_ = result.mask_.data();
+
+            for (size_t i = 0; i < mask_.size(); ++i) {
+                result_mask_[i] = this_mask_[i] & other_mask_[i];
+            }
+
+
+            size_t total_ones = 0;
+            for (size_t i = 0; i < mask_.size(); ++i) {
+                total_ones += std::popcount(result_mask_[i]);
+            }
+            result.n_ones_ = total_ones;
+            return result;
+        }
+
+
+
+
+        [[nodiscard]]BitMask operator|(const BitMask& other) const {
+            if (this == &other) return *this;
+
+            assert(abs_size == other.abs_size);
+
+            BitMask result(abs_size, false);
+            result.n_ones_ = 0;
+            for (size_t i = 0; i < mask_.size(); ++i) {
+                result.mask_[i] = mask_[i] | other.mask_[i];
+                result.n_ones_ += std::popcount(result.mask_[i]);
+            }
+
+            return result;
+        }
+
+        [[nodiscard]]BitMask operator-(const BitMask& other) const {
+            return and_not(other);
+        }
+
+
+
+
+
 
 
         [[nodiscard]] std::optional<size_t> first_one() const {
@@ -328,7 +403,7 @@ export namespace atomix {
             }
         }
 
-
+        /*
         void set_range(const BitPos start, const BitPos end, const bool value) {
             //TODO: this could potential to be optimized
             bounds::check_index_interval(to_bits(start), to_bits(end), abs_size);
@@ -353,6 +428,58 @@ export namespace atomix {
 
             }
             
+        }
+        */
+
+        void set_range(const BitPos start, const BitPos end, const bool value) {
+            const size_t start_bit = to_bits(start);
+            const size_t end_bit = to_bits(end);
+
+            bounds::check_index_interval(start_bit, end_bit, abs_size);
+
+            if (start_bit >= end_bit) return;
+
+            const size_t start_word = start_bit / 64;
+            const size_t end_word = end_bit / 64;
+            const size_t start_offset = start_bit % 64;
+            const size_t end_offset = end_bit % 64;
+
+            auto update_word = [this, value](size_t word_idx, uint64_t mask) {
+                const uint64_t old_val = mask_[word_idx];
+                const uint64_t new_val = value ? (old_val | mask) : (old_val & ~mask);
+                mask_[word_idx] = new_val;
+                n_ones_ += (std::popcount(new_val) - std::popcount(old_val));
+            };
+
+            // Case 1: 1 word
+            if (start_word == end_word) {
+                const size_t count = end_bit - start_bit;
+                const uint64_t mask = (count == 64) ? ~0ULL : (((1ULL << count) - 1ULL) << start_offset);
+                update_word(start_word, mask);
+                return;
+            }
+
+            // Case 2: multiple word
+            if (start_offset != 0) {
+                const uint64_t first_mask = (~0ULL) << start_offset;
+                update_word(start_word, first_mask);
+            } else {
+                update_word(start_word, ~0ULL);
+            }
+
+            // Case 2 : tail
+            const uint64_t fill_val = value ? ~0ULL : 0ULL;
+            for (size_t w = start_word + 1; w < end_word; ++w) {
+                const uint64_t old_val = mask_[w];
+                mask_[w] = fill_val;
+                n_ones_ += value ? (64 - std::popcount(old_val)) : -std::popcount(old_val);
+            }
+
+            // 3. last word
+            if (end_offset != 0) {
+                const uint64_t last_mask = (1ULL << end_offset) - 1ULL;
+                update_word(end_word, last_mask);
+            }
         }
 
 
