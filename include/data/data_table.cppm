@@ -207,9 +207,9 @@ export namespace atomix::data {
             other.valid_rows_ = valid_rows_;
 
             other.storage_ =
-                storage_.clone(file_name);
+                storage_.clone(file_name + ".atomix");
             other.variable_storage_ =
-                variable_storage_.clone(file_name + "var");
+                variable_storage_.clone(file_name + ".atomixvar");
 
             return other;
         };
@@ -237,6 +237,18 @@ export namespace atomix::data {
         void set_new_column(const std::string& name, const DataType type, const DataType second_type = DataType::Undefined) {
             if (!data_.empty())
                 throw std::logic_error("Cannot add new column to a DataTable with data, please use append_column() instead");
+
+            if (type == DataType::List) {
+                throw std::logic_error("List support not implemented yet for set_new_column()");
+            }
+
+            if (type == DataType::List && second_type == DataType::Undefined) {
+                throw std::invalid_argument("List must not have a undefined secondary type");
+            }
+
+            if (type != DataType::List && second_type != DataType::Undefined) {
+                throw std::invalid_argument("Non-list must have a undefined secondary type");
+            }
 
             column_valid_mask_.push_back(true);
             metadata_.emplace_back(name, type, second_type);
@@ -483,7 +495,7 @@ export namespace atomix::data {
                             const size_t amount = std::min(total_elem - elem_copied, avail_in_batch);
 
 
-                            data_[curr_pos.batch_index].chunks[i].null_mask.set_range(
+                            data_[curr_pos.batch_index].chunks[i].validity_mask.set_range(
                                 BitMask::to_bit_pos(curr_pos.row_index),
                                 BitMask::to_bit_pos(curr_pos.row_index + amount),
                                 true

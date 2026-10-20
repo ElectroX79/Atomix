@@ -103,7 +103,7 @@ export namespace atomix::data {
 
         mem::Chunk data;
         mem::Chunk offsets;
-        BitMask null_mask = BitMask(n_rows_batch, false);
+        BitMask validity_mask = BitMask(n_rows_batch, false);
 
 
         ColumnData() = default;
@@ -118,7 +118,7 @@ export namespace atomix::data {
             ColumnData res;
             res.data = data.unsafe_clone();
             res.offsets = offsets.unsafe_clone();
-            res.null_mask = null_mask;
+            res.validity_mask = validity_mask;
             return res;
         }
 
