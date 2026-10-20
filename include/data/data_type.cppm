@@ -291,5 +291,27 @@ export namespace atomix::data::data_type_utils {
     }
 
 
+    constexpr bool is_numeric(const DataType dt) {
+        return dt == DataType::Int32 || dt == DataType::Float64;
+    }
+
+
+    constexpr bool is_float(const DataType dt) {
+        return dt == DataType::Float64;
+    }
+
+    constexpr bool admit_math_op(const DataType dt1, const DataType dt2) {
+        return is_numeric(dt1) && is_numeric(dt2);
+    }
+    
+
+
+    constexpr bool admit_math_op_literal(const DataType dt) {
+       return is_numeric(dt)
+            || dt == DataType::Bool
+            || dt == DataType::Char;
+    }
+
+
 }
 
