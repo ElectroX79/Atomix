@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_compile_options(-march=native -Wall -Wextra -g -O2 -Wno-maybe-uninitialized)
+add_compile_options(-march=native -Wall -Wextra -g -O3 -Wno-maybe-uninitialized)
 
 file(GLOB_RECURSE ATOMIX_MODULES CONFIGURE_DEPENDS
         "${PROJECT_SOURCE_DIR}/include/*.cppm"
@@ -94,12 +94,10 @@ create_test_instance(buffer_benchmark test/benchmark/buffer/buffer.cpp AtomixCor
 
 
 #executable example1
-create_program(example1 demos/example1.cpp AtomixCoreSanitized)
-enable_sanitizers(example1)
+create_program(example1 demos/example1.cpp AtomixCore)
 
-#executable example1
-create_program(example2 demos/example2.cpp AtomixCoreSanitized)
-enable_sanitizers(example2)
+#executable example2
+create_program(example2 demos/example2.cpp AtomixCore)
 
 
 

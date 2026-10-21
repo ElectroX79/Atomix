@@ -6,7 +6,8 @@ build/
 
 .vscode/
 vcpkg/
-<<<<<<< HEAD
 .idea/
-=======
->>>>>>> df5a8ff (feat(scanner, tabular_data): add class for parsing documents, add tabular_data class)
+
+perf.data
+*.atomix
+*.atomixvar
