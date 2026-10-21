@@ -84,8 +84,8 @@ export namespace atomix::mem::loader{
 
 
     [[nodiscard]] data::DataTable initialize_table_clean(const std::string& file_name) {
-        FileManager main_manager = FileManager::create_blank(file_name, atomix_format_main_header_size);
-        FileManager variable_manager = FileManager::create_blank(file_name + "var", atomix_format_var_header_size);
+        FileManager main_manager = FileManager::create_blank(file_name + ".atomix", atomix_format_main_header_size);
+        FileManager variable_manager = FileManager::create_blank(file_name + ".atomixvar", atomix_format_var_header_size);
 
         data::DataTable dt;
         auto& metadata = data::detail::unsafe_get_metadata(dt);
@@ -151,10 +151,10 @@ export namespace atomix::mem::loader{
     }
 
 
-     [[nodiscard]] data::DataTable initialize_table( const std::string& main_manager_name, const std::string& variable_manager_name){
+     [[nodiscard]] data::DataTable initialize_table( const std::string& file_name){
 
-        FileManager main_manager(main_manager_name);
-        FileManager variable_manager(variable_manager_name);
+        FileManager main_manager = FileManager::create_blank(file_name, atomix_format_main_header_size);
+        FileManager variable_manager = FileManager::create_blank(file_name + "var", atomix_format_var_header_size);
 
 
         const std::byte* begin_ = main_manager.begin();
@@ -256,7 +256,7 @@ export namespace atomix::mem::loader{
                 pointer += sizeof(uint8_t);
 
                 //null_mask
-                read_bit_mask(begin_, pointer, column_data.null_mask, capacity);
+                read_bit_mask(begin_, pointer, column_data.validity_mask, capacity);
             }
 
             //row_mask
