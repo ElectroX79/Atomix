@@ -7,6 +7,11 @@ export module atomix.config;
 
 export namespace atomix {
 
+    constexpr bool is_power_two(const size_t n) {
+        //n > 0 redundant,
+        return  n > 0 && (n & (n - 1)) == 0;
+    }
+
     inline constexpr size_t KiB = 1ULL << 10;
     inline constexpr size_t MiB = 1ULL << 20;
     inline constexpr size_t GiB = 1ULL << 30;
@@ -34,4 +39,58 @@ export namespace atomix {
     namespace data {
         inline constexpr size_t n_rows_batch = 1024;
     }
+
+    static_assert(mem::default_alignment > 0 &&
+        "default_alignment must be positive");
+
+    static_assert(is_power_two(mem::default_alignment) &&
+        "default_alignment must be power of two");
+
+    //
+
+    static_assert(mem::atomix_format_main_header_size > 0 &&
+        "atomix_format_main_header_size must be positive");
+
+    static_assert(is_power_two(mem::atomix_format_main_header_size) &&
+        "atomix_format_main_header_size must be power of two");
+
+    static_assert(mem::atomix_format_main_header_size % mem::default_alignment == 0 &&
+       "atomix_format_main_header_size must be divisible by default_alignment");
+
+    //
+
+    static_assert(mem::atomix_format_var_header_size > 0 &&
+        "atomix_format_var_header_size must be positive");
+
+    static_assert(is_power_two(mem::atomix_format_var_header_size) &&
+        "atomix_format_var_header_size must be power of two");
+
+    static_assert(mem::atomix_format_var_header_size % mem::default_alignment == 0 &&
+       "atomix_format_var_header_size must be divisible by default_alignment");
+
+    //
+
+    static_assert(mem::cut_size > 0 &&
+        "Cut size must be positive");
+
+    static_assert(mem::chunk_size > 0 &&
+        "Chunk size must be positive");
+
+    //
+
+    static_assert(data::n_rows_batch > 0 &&
+        "n_row_batch must be positive");
+
+    static_assert(is_power_two(data::n_rows_batch) &&
+        "n_row_batch must be power of two");
+
+    static_assert(data::n_rows_batch % mem::default_alignment == 0 &&
+        "n_row_batch must be divisible by default_alignment");
+
+
+
 }
+
+
+
+

@@ -16,7 +16,11 @@ atomix::io::Reader::Reader(const std::string& file_name){
     }
 
     struct stat s;
-    fstat(fd_, &s);
+    if (fstat(fd_, &s) == -1) {
+        throw std::runtime_error("Error using fstat");
+    };
+
+
 
     if (s.st_size < 0) {
         throw std::runtime_error("Error reading file");
