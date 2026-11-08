@@ -1,31 +1,44 @@
 # DataTable
-> **Deprecated since ADR-0006 and ADR-0007**
->
-> **Warning:** This section is deprecated and will be changed in the future.
->
-> See [ADR-0006](../../adr/adr-0006-batching.md)
-> and [ADR-0007](../../adr/adr-0007-persistence-ram-disk.md) for more details
+
+`DataTable` is the main columnar table abstraction in Atomix. It provides a tabular interface while managing schema metadata, validity bitmasks, batches, and physical memory.
 
 ---
 
-> **Before continuing, make sure you understand [Column](column.md) and the architecture of the [Data Table](../../architecture/data_table.md).**
+## 1. Design & Lifecycle
 
-A `DataTable` is a user-level storage abstraction in Atomix.
+- **Move-Only Ownership:** Copy operations are deleted to prevent accidental memory copies.
+To duplicate data, an explicit deep `clone()` should be used.
 
-Its responsibility is to organize multiple `Column` instances into a single table while providing a consistent interface for inserting, accessing, and managing tabular data.
+- **Automatic Persistence:** With RAII, the table automatically serializes its metadata, validity masks, 
+and data buffers to disk through an unloader component when the destructor is called.
 
-## Internal representation
+---
 
-Internally, a `DataTable` stores its columns in a `std::vector<Column>`. 
+## 2. Internal Layout
 
-The reason is that `std::vector` handles the needs of `DataTable`, because it provides a standard
-data structure to acces the data with an efficient sequential access and constant-time random acces.
+Data tables are composed of three main groups of components:
 
-## Responsibilities
+- **Schema and bitmasks:** Describes the column types, names, and validity state.
 
-`DataTable` is responsible for:
+- **Batch partitioning:** Rows are split into fixed-size batches. This keeps execution units small enough to 
+fit in caches and provides a better way to parallelize workloads.
 
-- Managing the lifetime of its columns.
-- Maintaining table consistency.
-- Providing the public API exposed to users.
-- Coordinating operations across multiple columns.
+- **Split physical storage:**
+    * **Fixed-size storage:** Stores primitive numeric types (integers, floats) with 64-byte alignment.
+    * **Variable-size storage:** An append-only arena for dynamic payloads (like strings). 
+
+>To learn more about the internal layout, see [Metadata](metadata.md).
+
+---
+
+## 3. Ingestion workflow
+To ingest data into a table, before writing rows, the table calculates the required number of batches and exact byte size. After this,
+it reserves memory in a single step to avoid costly reallocations.
+
+Ingestion copies data column by column directly into the table's storage.
+
+The last step would be setting the row visibility and validity bitmasks.
+
+---
+### References
+- Go to [Data Types](data_type.md) to learn more about the different data types supported by Atomix.
