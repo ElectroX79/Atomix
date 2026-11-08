@@ -127,49 +127,6 @@ export namespace atomix::data {
         }
 
 
-        /** @brief
-         * * @param col_index indicates which column of columns_
-         * * @param offset indicates the logical offset (not the physical, but the x element)
-         * * @param data_index returned value to know which buffer access
-         * * @param internal_index returned value that represents the offset inside the buffer
-         *
-        **/
-
-        /* deprecated
-        void get_buffer_pos(const size_t col_index, const size_t offset, size_t& data_index, size_t& internal_index)const{
-            if (columns_[col_index].type != DataType::List) {
-
-                const size_t byte_size = data_type_utils::byte_size_fixed(columns_[col_index].type);
-
-                data_index = offset/data::n_rows_batch;
-
-                internal_index = d
-            }
-            else {
-                throw std::logic_error("List support not implemented yet for get_buffer_pos()");
-                //Implement
-            }
-        }
-
-        template<DataType DT, DataType DT2 = DataType::Undefined> //if DT != DataType::List, then DT2 == DataType::Undefined
-        void get_buffer_pos(const size_t col_index, const size_t offset, size_t& buffer_index, size_t& remainder)const{
-
-
-            if constexpr(DT != DataType::List) {
-                using T = type_of_t<DT>;
-
-
-                buffer_index = offset*sizeof(T) / mem::chunk_size;
-                remainder = offset*sizeof(T)  % mem::chunk_size;
-            }
-            else {
-                throw std::logic_error("List support not implemented yet for get_buffer_pos()");
-                using T_aux [[maybe_unused]] = type_of_t<DT2> ; //variable_type, delete [[maybe_unused]] when implemented
-                //Implement
-
-            }
-        }
-        */
 
 
 
@@ -254,168 +211,8 @@ export namespace atomix::data {
             metadata_.emplace_back(name, type, second_type);
         }
 
-        /*
-        void append_column(const std::string& name,
-                            const TGroupColumn& col_data,
-                            const BitMask& col_null_mask) {
 
-            auto get_size = [](const auto& column) -> std::size_t {
-                return column.size();
-            };
-            const size_t col_data_size = std::visit(get_size, col_data);
-
-            if (col_data_size != col_null_mask.total_bits()) {
-                throw std::invalid_argument
-                    ("Contract broken: number of elements does not match to number of nulls of the table");
-            }
-
-            if (col_data_size != valid_rows_) {
-                throw std::invalid_argument
-                    ("Contract broken: number of elements does not match to numbers of row of the table");
-            }
-
-
-
-            auto function = [&]<TDataTypeCompatibleCol T>(T&& value) -> void {
-                const CompDataType CDT =  type_to_datatype_col<std::remove_cvref_t<T>>();
-
-                if (CDT.type != DataType::List) {
-                    size_t n_batch = 0; //index for data_ (data_[n_batch]);
-                    size_t n_element = 0; //index for col_data and col_null_mask (x[n_element]);
-                    while(n_batch < data_.size() && n_element < col_data_size) {
-                        data_[n_batch].chunks.emplace_back();
-                        data_[n_batch].chunks.back().data =
-                            storage_.allocate_chunk(data_type_utils::byte_size_fixed(CDT.type) * n_rows_batch);
-                        data_[n_batch].chunks.back().null_mask = BitMask(n_rows_batch, true);
-
-                        for (size_t i = 0; i < n_rows_batch; ++i) {
-                            data_[n_batch].row_mask[i];
-                        }
-
-                        n_element++;
-                        n_batch++;
-
-                    }
-                }
-                else {
-                    throw std::logic_error("List support not implemented yet for append_column()");
-                }
-
-            };
-            std::visit(col_data, function);
-
-
-        }
-        /*
-
-
-        //TODO: finish add_row
-        /*
-        void add_rows(const std::vector<std::vector<TGroup>&>& v_data) {
-            Position pos = reserve_rows(v_data.size());
-
-            if (v_data.empty()) {
-                return;
-            }
-
-
-
-
-            //1 major loop
-            for (size_t i = 0; i < v_data.size(); ++i) {
-                if (v_data[i].size() != metadata_.size()) {
-                    throw std::invalid_argument("Contract broken: columns count does not match");
-                }
-                for (size_t j = 0; j < v_data[i].size(); ++j) {
-                    auto function = [&]<TDataTypeCompatible T>(T&& value) {
-                        constexpr DataType DT = type_to_datatype<T>().type;
-                        if (DT != metadata_[j].type)
-                            throw std::logic_error("Contract broken: data type does not match");
-
-                        if constexpr (DT_is_fixed_t<DT>){
-
-                            const auto& chunk = data_[pos.batch_index].chunks[j].data;
-
-                            std::byte* ptr =
-                                chunk.calculate_ptr(
-                                    pos.row_index + i,
-                                    storage_.begin(),
-                                    sizeof(T)
-                                );
-
-                            store_unaligned(ptr, std::forward<T>(value));
-                        }
-                        else {
-                            const auto& chunk_offsets = data_[pos.batch_index].chunks[j].offsets;
-                            uint64_t prev_uint64 = 0
-
-                            if (i != 0)[[likely]] {
-                                std::byte* ptr_prev =
-                                    chunk_offsets.calculate_ptr(
-                                        pos.row_index + i - 1,
-                                        storage_.begin(),
-                                        sizeof(uint64_t)
-                                    );
-
-                                const auto prev_ptr_uint64 =
-                                    std::start_lifetime_as<uint64_t>(ptr_prev);
-
-                                prev_uint64 = *prev_ptr_uint64
-                            }
-
-
-                            std::byte* ptr =
-                                chunk_offsets.calculate_ptr(
-                                    pos.row_index + i,
-                                    storage_.begin(),
-                                    sizeof(uint64_t)
-                                );
-
-                            store_unaligned(ptr , value.size() + prev_uint64 );
-                        }
-
-                    }
-
-                    std::visit(function, v_data[i][j]);
-
-                }
-            }
-
-            //2 major loop
-            for (size_t j = 0; j < v_data[0].size; ++j) {
-                if (v_data[0][j].type == DataType::List) {
-                    uint64_t storage_needed = 0;
-                    for (size_t i = 0; i < v_data.size(); ++i) {
-
-                        auto function = [&]<TDataTypeCompatible T>(T&& value) {
-                            constexpr DataType DT = type_to_datatype<T>().type;
-                            static_assert(DT == DataType::List, "Program internal contract violated, please report issue");
-
-                            storage_needed += value.size();
-
-                        }
-
-                        std::visit(function, v_data[i][j]);
-                    }
-                    // TODO: using storage_needed to reserve and after reserve, do a second loop ( rn doing this)
-                    //reserving_variable_storage() ... TASK DONE
-                    variable_storage_.reserve(storage_needed);
-
-                    for (size_t i = 0; i < v_data.size(); ++i) {
-
-                        auto function = [&]<TDataTypeCompatible T>(T&& value) {
-                           //store the information in the chunks TASK DOING
-                            v_data[i][j]
-                        }
-
-                        std::visit(function, v_data[i][j]);
-                    }
-                }
-            }
-
-
-        }
-        */
+        //TODO: add option to support NULL/NON-VALID values
         void add_batch(const std::vector<TGroupColumn>& v_data) {
 
             if (v_data.empty()) {
@@ -453,7 +250,8 @@ export namespace atomix::data {
                 const size_t total_rows = diff;
 
                 while (rows_processed < diff) {
-                    const size_t avail_in_batch = n_rows_batch - curr_pos.row_index;
+                    const size_t avail_in_batch =
+                        n_rows_batch - curr_pos.row_index;
                     const size_t amount = std::min(total_rows - rows_processed, avail_in_batch);
 
 
@@ -551,51 +349,3 @@ export namespace atomix::data {
 
 }
 
-
-/*
-if (pos.batch_index > 0) {
-                            if  (n_rows_batch - pos.row_index > remainder_elem) {
-
-                                auto src =
-                                    get_ptr(value) + pos.row_index * sizeof(T);
-                                auto dest =
-                                    data_[pos.batch_index].chunks[i].data.calculate_ptr(pos.row_index, storage_.begin(), sizeof(T));
-                                memcpy(src, dest, remainder_elem * sizeof(T));
-                            }
-                            else {
-                                auto src =
-                                    get_ptr(value) + pos.row_index * sizeof(T);
-                                auto dest =
-                                    data_[pos.batch_index].chunks[i].data.calculate_ptr(pos.row_index, storage_.begin(), sizeof(T));
-
-                                memcpy(src, dest, n_rows_batch - pos.row_index * sizeof(T));
-                                remainder_elem -= n_rows_batch - pos.row_index;
-                            }
-                            loop_offset2 = 1;
-                        }
-
-
-                        for (size_t j = loop_offset2; j < upper_bound.batch_index; ++j) {
-
-                            auto src =
-                                    get_ptr(value) + pos.row_index * sizeof(T);
-                            auto dest =
-                                data_[pos.batch_index].chunks[j].data.calculate_ptr(0 , storage_.begin(), sizeof(T));
-
-                            memcpy(src, dest, n_rows_batch * sizeof(T));
-                            remainder_elem -= n_rows_batch;
-                        }
-
-                        auto src =
-                                    get_ptr(value) + pos.row_index * sizeof(T);
-                        auto dest =
-                            data_[pos.batch_index].chunks[i].data.calculate_ptr(0 , storage_.begin(), sizeof(T));
-                        memcpy(src, dest, upper_bound.row_index * sizeof(T));
-                        remainder_elem -= upper_bound.row_index;
-
-
-                        if (remainder_elem != 0) {
-                            std::cerr << "ERROR: remainder_elem != 0, internal error, please report" << "\n";
-                            std::abort();
-                        }
- */
