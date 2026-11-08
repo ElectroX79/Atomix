@@ -11,3 +11,6 @@ vcpkg/
 perf.data
 *.atomix
 *.atomixvar
+
+float64_array_sum
+intenger32_array_sum

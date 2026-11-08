@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_compile_options(-march=native -Wall -Wextra -g -O3 -Wno-maybe-uninitialized)
+add_compile_options(-march=native -Wall -Wextra -g -O3 -Wno-maybe-uninitialized -fno-omit-frame-pointer)
 
 file(GLOB_RECURSE ATOMIX_MODULES CONFIGURE_DEPENDS
         "${PROJECT_SOURCE_DIR}/include/*.cppm"
