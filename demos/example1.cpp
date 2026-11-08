@@ -1,10 +1,11 @@
 
 
-#include <cstdint>
 #include <format>
 #include <vector>
 #include <span>
-#include <cstdint>
+#include <iostream>
+#include <ostream>
+#include <chrono>
 
 import atomix.data.data_table;
 import atomix.mem.loader;
@@ -19,6 +20,8 @@ using char_dt = atomix::data::char_dt;
 int main() {
     atomix::data::DataTable dt = atomix::mem::loader::initialize_table_clean("try1");
 
+
+    //Note: for primitive types atomix::data::DataType::Undefined is totally optional
     dt.set_new_column(
         "integer1",
         atomix::data::DataType::Int32,
@@ -34,10 +37,10 @@ int main() {
     dt.set_new_column("char1",
         atomix::data::DataType::Char,
         atomix::data::DataType::Undefined
-
-
     );
-    size_t n = 4096; //variable
+
+    //size_t n = 1024 * 1024 * 100;
+    size_t n = 1024 * 1024; //change if needed
     std::vector<int32_dt> int32_vec_rep{1, 2, 3, 4, 5};
     std::vector<float_dt> float64_vec_rep{1.1, 2.2, 3.3, 4.4, 5.5};
     std::vector<char_dt> char_vec_rep{'a', 'b', 'c', 'd', 'e'};
@@ -46,12 +49,15 @@ int main() {
     std::vector<float_dt> float64_vec;
     std::vector<char_dt> char_vec;
 
+    int32_vec.reserve(n * 5);
+    float64_vec.reserve(n * 5);
+    char_vec.reserve(n * 5);
+
     for (size_t i = 0; i < n; i++) {
         int32_vec.insert(int32_vec.end(), int32_vec_rep.begin(), int32_vec_rep.end());
         float64_vec.insert(float64_vec.end(), float64_vec_rep.begin(), float64_vec_rep.end());
         char_vec.insert(char_vec.end(), char_vec_rep.begin(), char_vec_rep.end());
     }
-
 
 
 
@@ -68,4 +74,22 @@ int main() {
     
     proxy.print_result();
 
+    const auto t_start1 = std::chrono::steady_clock::now();
+    const auto sum1 = proxy.col_sum<atomix::data::DataType::Int32>(0);
+    const auto t_end1 = std::chrono::steady_clock::now();
+
+    const auto t_start2 = std::chrono::steady_clock::now();
+    const auto sum2 = proxy.col_sum<atomix::data::DataType::Float64>(1);
+    const auto t_end2 = std::chrono::steady_clock::now();
+
+    const auto interval1_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end1 - t_start1).count();
+    const auto interval2_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end2 - t_start2).count();
+
+
+    std::cout << "interval1_ns: " << interval1_ns << std::endl;
+    std::cout << "interval2_ns: " << interval2_ns << std::endl;
+
+
+    std::cout << "sum1: " << sum1 << std::endl;
+    std::cout << "sum2: " << sum2 << std::endl;
 }
