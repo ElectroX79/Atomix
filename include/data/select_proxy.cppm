@@ -89,6 +89,7 @@ export namespace atomix::data {
             const size_t type_size = data_type_utils::byte_size_fixed(col_type);
 
             assert(col_data.data.size_ % type_size == 0);
+            static_assert(mask_t_bits % 16 == 0);
 
 
             const size_t norm_size =
@@ -115,6 +116,10 @@ export namespace atomix::data {
                 COL_T sum1 = 0;
                 COL_T sum2 = 0;
                 COL_T sum3 = 0;
+                COL_T sum4 = 0;
+                COL_T sum5 = 0;
+                COL_T sum6 = 0;
+                COL_T sum7 = 0;
                 COL_T sum_r = 0;
 
 
@@ -126,13 +131,15 @@ export namespace atomix::data {
 
                     if (word == ~mask_t(0)) {
                     //if constexpr (false){
-                        #pragma GCC ivdep
-                        #pragma GCC unroll 4
-                        for (size_t j = i; j < i + mask_t_bits; j+=4) {
+                        for (size_t j = i; j < i + mask_t_bits; j+=8) {
                             sum0 += ptr[j+0];
                             sum1 += ptr[j+1];
                             sum2 += ptr[j+2];
                             sum3 += ptr[j+3];
+                            sum4 += ptr[j+4];
+                            sum5 += ptr[j+5];
+                            sum6 += ptr[j+6];
+                            sum7 += ptr[j+7];
                         }
                     }
 
@@ -143,7 +150,7 @@ export namespace atomix::data {
 
                     else {
                         const mask_t word2 = word;
-                        for (size_t j = i; j < i + mask_t_bits; j += 4) {
+                        for (size_t j = i; j < i + mask_t_bits; j += 8) {
                             const mask_t word2_offset = word2 >> (j - i);
                             sum0 +=
                                 word2_offset & (static_cast<mask_t>(1) << 0)
@@ -157,6 +164,18 @@ export namespace atomix::data {
                             sum3 +=
                                 word2_offset  & (static_cast<mask_t>(1) << 3)
                                 ? ptr[j + 3] : static_cast<COL_T>(0);
+                            sum4 +=
+                                word2_offset  & (static_cast<mask_t>(1) << 4)
+                                ? ptr[j + 4] : static_cast<COL_T>(0);
+                            sum5 +=
+                                word2_offset  & (static_cast<mask_t>(1) << 5)
+                                ? ptr[j + 5] : static_cast<COL_T>(0);
+                            sum6 +=
+                                word2_offset  & (static_cast<mask_t>(1) << 6)
+                                ? ptr[j + 6] : static_cast<COL_T>(0);
+                            sum7 +=
+                                word2_offset  & (static_cast<mask_t>(1) << 7)
+                                ? ptr[j + 7] : static_cast<COL_T>(0);
                         }
                     }
 
@@ -166,7 +185,7 @@ export namespace atomix::data {
                     sum_r += mask[i] ? ptr[i] : 0;
                 }
 
-                sum = static_cast<DT_T>(sum_r + sum0 + sum1 + sum2 + sum3);
+                sum = sum + static_cast<DT_T>(sum0 + sum1 + sum2 + sum3 + sum4 + sum5 + sum6 + sum7 + sum_r);
             }
             else if (col_type == DataType::Int32) {
 
@@ -175,10 +194,7 @@ export namespace atomix::data {
                 const COL_T* __restrict__ ptr  =
                     std::start_lifetime_as_array<COL_T>(raw_ptr, norm_size);
 
-                COL_T sum0 = 0;
-                COL_T sum1 = 0;
-                COL_T sum2 = 0;
-                COL_T sum3 = 0;
+
                 COL_T sum_r = 0;
 
 
@@ -189,36 +205,21 @@ export namespace atomix::data {
                         mask.get_word(i/mask_t_bits);
 
                     if (word == ~mask_t(0)) {
-                    //if constexpr (false){
-                        for (size_t j = i; j < i + mask_t_bits; j+=4) {
-                            sum0 += ptr[j+0];
-                            sum1 += ptr[j+1];
-                            sum2 += ptr[j+2];
-                            sum3 += ptr[j+3];
+                        for (size_t j = i; j < i + mask_t_bits; j++) {
+                            sum_r += ptr[j];
                         }
                     }
 
                     else if (word == mask_t(0)) {
-                    //else if constexpr (false){
                         continue;
                     }
 
                     else {
                         const mask_t word2 = word;
-                        for (size_t j = i; j < i + mask_t_bits; j += 4) {
-                            const mask_t word2_offset = word2 >> (j - i);
-                            sum0 +=
-                                word2_offset & (static_cast<mask_t>(1) << 0)
+                        for (size_t j = i; j < i + mask_t_bits; j++) {
+                            sum_r +=
+                                (word2 >> (j - i)) & (static_cast<mask_t>(1))
                                 ? ptr[j] : static_cast<COL_T>(0);
-                            sum1 +=
-                                word2_offset  & (static_cast<mask_t>(1) << 1)
-                                ? ptr[j + 1] : static_cast<COL_T>(0);
-                            sum2 +=
-                                word2_offset  & (static_cast<mask_t>(1) << 2)
-                                ? ptr[j + 2] : static_cast<COL_T>(0);
-                            sum3 +=
-                                word2_offset  & (static_cast<mask_t>(1) << 3)
-                                ? ptr[j + 3] : static_cast<COL_T>(0);
                         }
                     }
 
@@ -228,7 +229,8 @@ export namespace atomix::data {
                     sum_r += mask[i] ? ptr[i] : 0;
                 }
 
-                sum = static_cast<DT_T>(sum_r + sum0 + sum1 + sum2 + sum3);
+                //sum = static_cast<DT_T>(sum_r + sum0 + sum1 + sum2 + sum3);
+                sum = sum + static_cast<DT_T>(sum_r);
             }
 
 
@@ -265,7 +267,7 @@ export namespace atomix::data {
 
 
 
-
+        //FIXME: DO NOT SUPPORT NULL VALUES
         void print_result()const {
             if (table_reference_ == nullptr) {
                 throw std::runtime_error("SelectProxy::col_sum: table_reference_ is nullptr");
@@ -304,8 +306,10 @@ export namespace atomix::data {
                 throw std::runtime_error("SelectProxy::col_sum: table_reference_ is nullptr");
             }
 
-            const auto& data = detail::unsafe_get_data(*table_reference_);
-            const auto& metadata = detail::unsafe_get_metadata(*table_reference_);
+            const auto& data =
+                detail::unsafe_get_data(*table_reference_);
+            const auto& metadata =
+                detail::unsafe_get_metadata(*table_reference_);
 
             bounds::check_index_individual(col_index1, metadata.size());
 

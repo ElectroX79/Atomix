@@ -8,7 +8,6 @@ export module atomix.config;
 export namespace atomix {
 
     constexpr bool is_power_two(const size_t n) {
-        //n > 0 redundant,
         return  n > 0 && (n & (n - 1)) == 0;
     }
 
@@ -40,8 +39,8 @@ export namespace atomix {
         inline constexpr size_t n_rows_batch = 1024;
     }
 
-    static_assert(mem::default_alignment > 0 &&
-        "default_alignment must be positive");
+    static_assert(mem::default_alignment > 16 &&
+        "default_alignment must be bigger than a 16 bytes");
 
     static_assert(is_power_two(mem::default_alignment) &&
         "default_alignment must be power of two");

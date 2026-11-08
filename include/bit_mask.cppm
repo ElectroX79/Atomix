@@ -248,15 +248,18 @@ export namespace atomix {
             const mask_t* __restrict__ other_mask_ = other.mask_.data();
             mask_t* __restrict__ result_mask_ = result.mask_.data();
 
+            size_t total_ones = 0;
             for (size_t i = 0; i < mask_.size(); ++i) {
                 result_mask_[i] = this_mask_[i] & other_mask_[i];
+                total_ones += std::popcount(result_mask_[i]);
             }
-
-
+            //TODO: study possibility of loop fusion if it doesn't difficult SIMD
+            /*
             size_t total_ones = 0;
             for (size_t i = 0; i < mask_.size(); ++i) {
                 total_ones += std::popcount(result_mask_[i]);
             }
+            */
             result.n_ones_ = total_ones;
             return result;
         }
