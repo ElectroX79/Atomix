@@ -21,19 +21,26 @@ git clone
 cd Atomix
 ```
 
-### Then you two options: 
+### Then you have two options: 
 
 ___
 
 ## 1. Run the demos
 **If you just want to run the demos and try the current API's:**
 
-Demos are located in the `demo` directory, you can build and execute them following
-the steps indicated in the readme located in `demo/scripts/README.md`.
+Demos are located in the `demo` directory, you can build and execute with:
 
-In `demo/scripts/README.md` you will find three bash scripts and a README.md, you should
-follow the instructions in the README.md to run the scripts.
+```bash
+./demos/scripts/example1.sh 
+# and
+./demos/scripts/example2.sh
+```
+After running the demos you can clean the build:
+```bash
+./demos/scripts/clean.sh
+```
 
+>Also, if you prefer, you can run the demos with standard CMake, following the same steps as the ones above but with `<demo-target>`.
 ___
 
 ## 2. Build the project
