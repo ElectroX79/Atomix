@@ -22,10 +22,7 @@ nav:
   - Home: index.md
   - Getting Started: getting-started/introduction.md
 
-  - Architecture:
-    - Introduction: architecture/introduction.md
-    - Data Table: architecture/data_table.md
-    - Memory management: architecture/mem_management.md
+  - Architecture: architecture/atomix_architecture.md
 
   - Internals:
     - Introduction: internals/introduction.md
@@ -33,11 +30,16 @@ nav:
       - Data Type: internals/data/data_type.md
       - Column: internals/data/column.md
       - Data Table: internals/data/data_table.md
+    - I/O:
+      - File manager: internals/io/file_manager.md
+      - Loader: internals/io/loader.md
+      - Unloader: internals/io/unloader.md
     - Memory:
       - Buffer: internals/mem/buffer.md
       - Aligned allocator: internals/mem/aligned_allocator.md
       - Virtual memory: internals/mem/vmem.md
       - Mem route: internals/mem/mem_route.md
+      - Data Storage: internals/mem/data_storage.md
 
   - Architecture Decision Records:
       - ADR-0001: adr/adr-0001-shared_ownership_buffer.md
@@ -51,13 +53,14 @@ nav:
   - Benchmarks:
     - Memory allocation strategies: benchmarks/memory_allocation_performance.md
     - Buffer Ownership and Copy Performance: benchmarks/cow_buffer_ownership.md
+    - Column Sum Performance: benchmarks/agregation.md
 
-  - Future features:
-    - Introduction: future_features/introduction.md
-    - Proposals:
-      - Custom allocator: future_features/proposals/custom_allocator.md
-      - IO: future_features/proposals/io.md
-      - Parallelism: future_features/proposals/parallelism.md
+  #- Future features:
+  #  - Introduction: future_features/introduction.md
+  #  - Proposals:
+  #    - Custom allocator: future_features/proposals/custom_allocator.md
+  #    - IO: future_features/proposals/io.md
+  #    - Parallelism: future_features/proposals/parallelism.md
 
   - Contributing:
     - Introduction: contributing/introduction.md

@@ -1,22 +1,25 @@
 
 
-#include <cstdint>
 #include <format>
-#include <vector>
-#include <span>
-#include <cstdint>
+#include <iostream>
+#include <ostream>
+
 
 import atomix.data.data_table;
 import atomix.mem.loader;
 import atomix.mem.unloader;
 import atomix.data.data_type;
-
-using int32_dt = atomix::data::type_of_t<atomix::data::DataType::Int32>;
-using float_dt = atomix::data::type_of_t<atomix::data::DataType::Float64>;
-using char_dt = atomix::data::type_of_t<atomix::data::DataType::Char>;
+import atomix.data.select_proxy;
 
 int main() {
 
-    const auto dt = atomix::mem::loader::initialize_table("try1", "try1var");
-    auto dt2 = dt.clone("try1_1");
+    auto dt = atomix::mem::loader::initialize_table("try1");
+    auto dt_clone = dt.clone("try1_clone");
+
+    atomix::data::SelectProxy proxy_dt = atomix::data::SelectProxy(dt);
+    atomix::data::SelectProxy proxy_dt_clone = atomix::data::SelectProxy(dt_clone);
+
+    proxy_dt.print_result();
+    std::cout << "second: " << std::endl;
+    proxy_dt_clone.print_result();
 }

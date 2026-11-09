@@ -102,9 +102,9 @@ export namespace atomix::mem::unloader {
                     total += sizeof(uint64_t) * 2 + sizeof(uint8_t);
                     // offsets Chunk (17 bytes)
                     total += sizeof(uint64_t) * 2 + sizeof(uint8_t);
-                    // null_mask (24 + k bytes)
+                    // validity_mask (24 + k bytes)
                     total += sizeof(uint64_t);
-                    total += col_data.null_mask.unsafe_get_mask().size() * sizeof(mask_t);
+                    total += col_data.validity_mask.unsafe_get_mask().size() * sizeof(mask_t);
                     total += 2 * sizeof(uint64_t);
                 }
                 // row_mask (24 + k bytes)
@@ -177,7 +177,7 @@ export namespace atomix::mem::unloader {
             for (const auto& col_data : batch.chunks) {
                 pointer = write_chunk(begin, col_data.data, pointer);
                 pointer = write_chunk(begin, col_data.offsets, pointer);
-                pointer = write_bit_mask(begin, col_data.null_mask, pointer);
+                pointer = write_bit_mask(begin, col_data.validity_mask, pointer);
             }
 
             pointer = write_bit_mask(begin, batch.row_mask, pointer);
