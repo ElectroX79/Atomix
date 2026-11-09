@@ -1,7 +1,7 @@
 # Persistence ram-disk (ADR-0007)
 
 ## Status
-Pending test and benchmark
+Pending test
 
 ## Context
 All the data is stored in memory (RAM). No file-backed storage was used.

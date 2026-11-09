@@ -1,7 +1,7 @@
 # Datatable structure layout refactor (ADR-0006)
 
 ## Status
-Pending test and benchmark
+Pending test 
 
 ## Context
 Pure columnar data structure, more oop-oriented layout. No batching, just an infinite array in a column.

@@ -28,8 +28,8 @@ nav:
     - Introduction: internals/introduction.md
     - Data:
       - Data Type: internals/data/data_type.md
-      - Column: internals/data/column.md
       - Data Table: internals/data/data_table.md
+      - Metadata: internals/data/metadata.md
     - I/O:
       - File manager: internals/io/file_manager.md
       - Loader: internals/io/loader.md
@@ -67,5 +67,5 @@ nav:
     - Project structure: contributing/project_structure.md
     - Communication: contributing/communication.md
     - Development workflow: contributing/development_workflow.md
-    - ADR: contributing/arquitecture_adr.md
+    - ADR: contributing/architecture_adr.md
     - Benchmarks: contributing/benchmark.md

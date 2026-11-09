@@ -67,7 +67,7 @@ fitting correctly in caches during SIMD operations.
 - **Dynamic scaling:** Columns can grow incrementally without requiring massive reallocations or 
 contiguous virtual memory mapping.
 
-For architectural decisions about batch processing, see [ADR-0006](../../adr/adr-0006-batching.md).
+For architectural decisions about batch processing, see [ADR-0006](../adr/adr-0006-batching.md).
 
 ___
 
@@ -77,7 +77,7 @@ Atomix stores data directly in a chunk-serialized format on disk. Because memory
 aligned and self-contained, serializing and deserializing data reduces translation overhead and 
 avoids unnecessary copying.
 
-For details on the disk storage format and I/O design, see [ADR-0007](../../adr/adr-0007-persistence-ram-disk.md) and [File Manager Internals](../internals/io/file_manager.md).
+For details on the disk storage format and I/O design, see [ADR-0007](../adr/adr-0007-persistence-ram-disk.md) and [File Manager Internals](../internals/io/file_manager.md).
 ___
 
 To learn more about the implementation, go to [Data Table internals](../internals/data/data_table.md)
