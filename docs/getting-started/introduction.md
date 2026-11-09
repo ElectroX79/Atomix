@@ -17,7 +17,7 @@ Atomix is currently mainly developed and tested on Linux.
 Clone the repository and enter the project directory:
 
 ```bash
-git clone 
+git clone https://github.com/ElectroX79/Atomix
 cd Atomix
 ```
 
@@ -68,18 +68,8 @@ cmake --build build --target <test-target>
 ```
 
 ### 2.2 Run a benchmark test
-**To run a benchmark test:**
-
-Benchmarks can be built and run like other targets. The code itself is usually located in `test/benchmark`.
-
-For example:
-
-```bash
-cmake --build build --target <benchmark-target>
-./build/<benchmark-target>
-```
-
-Some benchmarks use additional tools such as `perf` which could be automated entirely with a bash script. Check the [benchmark](../contributing/benchmark.md) documentation before running them.
+**To run a benchmark test:** Check the every [benchmark's](../benchmarks/introduction.md) 
+reproducibility section to see how to do it, in each benchmark you can find **specific instructions**.
 
 ___
 
@@ -89,8 +79,8 @@ Once you are able to build and test Atomix, you can:
 
 ### Learn more about the project
 
-- [Architecture](architecture/atomix_arquitecture.md): To understand how Atomix is structured and how it works.
-- [Internals](internals/introduction.md): Where you can find information about the internal design of Atomix.
+- [Architecture](../architecture/atomix_architecture.md): To understand how Atomix is structured and how it works.
+- [Internals](../internals/introduction.md): Where you can find information about the internal design of Atomix.
 
 
 ### Consider contributing to the project:

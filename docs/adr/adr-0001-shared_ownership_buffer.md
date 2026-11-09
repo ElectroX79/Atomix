@@ -1,7 +1,7 @@
 # Shared ownership for class buffer (ADR-0001)
 
 ## Status
-Accepted
+Deprecated
 
 
 ## Context

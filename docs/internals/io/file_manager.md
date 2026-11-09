@@ -20,7 +20,7 @@
 `FileManager` exposes a contiguous mapped address range. Other higher-level components should use logical byte offsets 
 instead of absolute pointers.
 
-> To learn more about logical storage allocation, see [DataStorage](data_storage.md).
+> To learn more about logical storage allocation, see [DataStorage](../mem/data_storage.md).
 
 ---
 

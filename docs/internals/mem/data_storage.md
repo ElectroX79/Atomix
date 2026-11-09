@@ -40,6 +40,7 @@ Chunks store logical offsets rather than absolute pointers, allowing addresses t
 
 
 ## 4. About chunk
-Chunk is a descriptor for a contiguous region of memory. 
+Chunk is a descriptor for a contiguous region of memory. It is non-proprietary and has a discriminant to 
+reference the correct file or binary data.
 
-> To learn more about physical file management, see [FileManager](file_manager.md).
+> To learn more about physical file management, see [FileManager](../io/file_manager.md).
